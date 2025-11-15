@@ -12,10 +12,24 @@ const mode = process.argv[2] || "development";
 const isProduction = mode === "production";
 const isDev = mode === "development";
 
-// Ensure public directory exists
-const publicDir = join(__dirname, "public");
-if (!existsSync(publicDir)) {
-  mkdirSync(publicDir, { recursive: true });
+// Ensure dist directory exists
+const distDir = join(__dirname, "dist");
+if (!existsSync(distDir)) {
+  mkdirSync(distDir, { recursive: true });
+}
+
+// Copy public directory to dist if it exists
+async function copyPublicToDist() {
+  const publicDir = join(__dirname, "public");
+  if (existsSync(publicDir)) {
+    try {
+      const { cp } = await import("node:fs/promises");
+      await cp(publicDir, distDir, { recursive: true });
+      console.log("✓ Copied public directory to dist");
+    } catch (error) {
+      console.log("Note: Could not copy public directory:", error);
+    }
+  }
 }
 
 // Compile Pug template to HTML
@@ -24,13 +38,13 @@ function compilePug() {
   const html = pug.renderFile(pugFile, {
     pretty: isDev,
   });
-  writeFileSync(join(publicDir, "index.html"), html);
+  writeFileSync(join(distDir, "index.html"), html);
   console.log("✓ Compiled Pug template");
 }
 
 // Update HTML with CSS and JS references
 function updateHTML(cssFile: string, jsFile: string) {
-  const htmlPath = join(publicDir, "index.html");
+  const htmlPath = join(distDir, "index.html");
   if (existsSync(htmlPath)) {
     let html = readFileSync(htmlPath, "utf-8");
     
@@ -60,7 +74,7 @@ function compileScss() {
   const result = sass.compile(scssFile, {
     style: isProduction ? "compressed" : "expanded",
   });
-  writeFileSync(join(publicDir, "style.css"), result.css);
+  writeFileSync(join(distDir, "style.css"), result.css);
   console.log("✓ Compiled SCSS");
 }
 
@@ -68,11 +82,11 @@ function compileScss() {
 async function buildJS(): Promise<string> {
   const hash = isProduction ? `-${Date.now().toString(36)}` : "";
   const outputName = isProduction ? `app${hash}.min.js` : `app${hash}.js`;
-  const outputPath = join(publicDir, outputName);
+  const outputPath = join(distDir, outputName);
   
   const result = await build({
     entrypoints: [join(__dirname, "src/js/index.js")],
-    outdir: publicDir,
+    outdir: distDir,
     minify: isProduction,
     sourcemap: isDev ? "inline" : "none",
     target: "browser",
@@ -119,7 +133,7 @@ async function buildWorkers() {
   if (existsSync(workerFile)) {
     const result = await build({
       entrypoints: [workerFile],
-      outdir: join(publicDir, "workers"),
+      outdir: join(distDir, "workers"),
       minify: isProduction,
       sourcemap: isDev ? "inline" : "none",
       target: "browser",
@@ -129,32 +143,18 @@ async function buildWorkers() {
   }
 }
 
-// Copy assets
-async function copyAssets() {
-  const assetsSrc = join(__dirname, "src/assets");
-  const assetsDest = join(publicDir, "assets");
-  
-  if (existsSync(assetsSrc)) {
-    try {
-      const { cp } = await import("node:fs/promises");
-      await cp(assetsSrc, assetsDest, { recursive: true });
-      console.log("✓ Copied assets");
-    } catch (error) {
-      console.log("Note: Assets should be copied manually or via a script");
-    }
-  }
-}
-
 // Main build function
 async function main() {
   console.log(`Building in ${mode} mode...\n`);
   
   try {
+    // Copy public directory first (if it exists)
+    await copyPublicToDist();
+    
     compilePug();
     compileScss();
     const jsFile = await buildJS();
     await buildWorkers();
-    await copyAssets();
     
     // Update HTML with CSS and JS references
     updateHTML("style.css", jsFile);

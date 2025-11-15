@@ -1,9 +1,10 @@
-import Transform from './Transform.js';
-import CoorManager from './CoorManager.js';
 import { ExistBefore } from '../Errors/index.js';
+import CoorManager from './CoorManager.js';
+import Transform from './Transform.js';
+
+const vector = MathPackage.entities.Vector;
 
 export default class {
-
   constructor(sketch, width, height) {
     this.sketch = sketch;
     this._width = width;
@@ -15,17 +16,22 @@ export default class {
     this.center = new vector(this.width / 2, this.height / 2);
 
     this.physicsRun = false;
-
   }
 
-  get coor() { return this.sketch.coor; }
+  get coor() {
+    return this.sketch.coor;
+  }
 
-  get width() { return this._width || 0; }
+  get width() {
+    return this._width || 0;
+  }
   set width(value) {
     this._width = value; /** to update the boundaries */
     this.transform.onchange();
   }
-  get height() { return this._height || 0; }
+  get height() {
+    return this._height || 0;
+  }
   set height(value) {
     this._height = value; /** to update the boundaries */
     this.transform.onchange();
@@ -56,18 +62,14 @@ export default class {
   }
 
   checkId(id) {
-    if (!id) throw new Error('can\'t set a falsy value to the name of this sketch child.');
-    let __id = id.replace(/^\s*([_a-zA-z]+\d*)\s*$/, '$1');
-    if (!__id)
-      throw new Error(`"${id}" is not valid to use.`);
-    else {
-      if (this.sketch.children.has(id)) {
-        throw new ExistBefore(id);
-      }
+    if (!id) throw new Error("can't set a falsy value to the name of this sketch child.");
+    const __id = id.replace(/^\s*([_a-zA-z]+\d*)\s*$/, '$1');
+    if (!__id) throw new Error(`"${id}" is not valid to use.`);
+
+    if (this.sketch.children.has(id)) {
+      throw new ExistBefore(id);
     }
-    if (Math.hasOwnProperty(id)) throw new ExistBefore(id);
+    if (Object.prototype.hasOwnProperty.call(Math, id)) throw new ExistBefore(id);
     return __id;
   }
-
 }
-

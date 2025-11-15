@@ -1,15 +1,14 @@
-import { getContainment, updateObjsOrder, resize, checkSM, addControl, keypadSettings, sidebar } from './global.js';
-import setEvents from './events/index.js';
-import setupKeypad from './keypad/index.js';
 import ChildControl from './ChildControl.js';
+import setEvents from './events/index.js';
+import { addControl, checkSM, getContainment, keypadSettings, resize, sidebar, updateObjsOrder } from './global.js';
+import setupKeypad from './keypad/index.js';
 import sketch from './sketch.js';
 
-function setupResizer(){
-
+function setupResizer() {
   //#region sidebar-resizer
 
-  var sidebarResizer = sidebar.querySelector(".resizer");
-  let srDraggingConfig = {}; // sidebarResizerDraggingConfig
+  const sidebarResizer = sidebar.querySelector('.resizer');
+  const srDraggingConfig = {}; // sidebarResizerDraggingConfig
 
   $(sidebarResizer).draggable({
     axis: 'x',
@@ -32,27 +31,24 @@ function setupResizer(){
     drag: () => {
       sidebar.style.flexBasis = sidebarResizer.style.left;
       resize(false);
-    }
-
+    },
   });
 
   //#endregion
-
 }
 
-function setupSortable(){
-
+function setupSortable() {
   //#region sortable-sidebar
 
-  var outer_ccc = document.querySelector('.outer-controls');
-  var inner_ccc = outer_ccc.querySelector('.inner-controls');
+  const outer_ccc = document.querySelector('.outer-controls');
+  const inner_ccc = outer_ccc.querySelector('.inner-controls');
 
   let startSorting = true;
-  $(".controls.sortable").sortable({
-    axis: "y",
+  $('.controls.sortable').sortable({
+    axis: 'y',
     cancel: '.control [cancel-move]',
 
-    start: function (e, ui) {
+    start: (e, ui) => {
       startSorting = true;
       outer_ccc.classList.add('sorting');
       if (inner_ccc.clientHeight > outer_ccc.clientHeight) {
@@ -60,16 +56,15 @@ function setupSortable(){
       }
 
       ui.item[0].classList.add('dragging');
-      let id = ui.item[0].getAttribute('id');
-      for (let child in sketch.children) {
+      const id = ui.item[0].getAttribute('id');
+      for (const child in sketch.children) {
         if (child.id === id) {
           child.focus();
-          continue;
         }
       }
     },
 
-    stop: function (e, ui) {
+    stop: (e, ui) => {
       if (startSorting) {
         outer_ccc.classList.remove('sorting');
         outer_ccc.style.overflowY = 'auto';
@@ -79,15 +74,13 @@ function setupSortable(){
       }
     },
 
-    update: function () {
+    update: () => {
       updateObjsOrder();
-    }
-
+    },
   });
-  $(".controls.sortable").disableSelection();
+  $('.controls.sortable').disableSelection();
 
   //#endregion
-
 }
 
 /**
@@ -112,12 +105,12 @@ export default function setupAPP() {
   checkSM();
   resize.prevSize = { width: window.innerWidth, height: window.innerHeight };
 
-  let mathFields = $(".math-field");
+  const mathFields = $('.math-field');
   for (let i = 0; i < mathFields.length; i++) {
     MQ.StaticMath(mathFields[i]);
   }
 
-  let addNewGCelt = $(`
+  const addNewGCelt = $(`
       <li class="control">
         <div class="side-status" cancel-move>
           <div class="order-container">
@@ -128,7 +121,6 @@ export default function setupAPP() {
           <div class=script-container><span type="text" class="script">NEW</span></div>
         </div>
         <div class="side-ctrl">
-          <button class="closebtn-2 remove" cancel-move><div class="inner"></div></button>
           <span class="move">
             <div>
               <span>..</span>

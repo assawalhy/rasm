@@ -1,3 +1,3 @@
-import setupAPP from "./app.js";
+import setupAPP from './app.js';
 
 setupAPP();

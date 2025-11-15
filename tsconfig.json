@@ -13,6 +13,6 @@
     "allowSyntheticDefaultImports": true
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "public"]
+  "exclude": ["node_modules", "public", "src/js/third-party"]
 }
 
