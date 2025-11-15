@@ -1,24 +1,24 @@
 
 
-@import './sub-styles/tabs';
+@use 'sub-styles/tabs';
 
 /* 
   keypad container
 */
 
-@import './sub-styles/keypad-container';
+@use 'sub-styles/keypad-container';
 
 /*
   show-hide keypad btn
 */
 
-@import './sub-styles/sh-key-btn';
+@use 'sub-styles/sh-key-btn';
 
 /* 
   keypad
 **/
 
-@import './sub-styles/keypad';
+@use 'sub-styles/keypad';
 
 /* on small screens */
 

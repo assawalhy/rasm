@@ -1,10 +1,10 @@
 
-@import './main/main';
+@use 'main/main';
 
-@import './canvas/canvas';
+@use 'canvas/canvas';
 
-@import './sidebar/sidebar';
+@use 'sidebar/sidebar';
 
-@import './keypad/keypad';
+@use 'keypad/keypad';
 
-@import 'small-screens';
+@use 'small-screens';

@@ -1,3 +1,4 @@
+@use "sass:meta";
 
 .keypad-container {
   --tabs-sBackground: rgba(27, 32, 34, 0.575);
@@ -25,7 +26,7 @@
 
   .tabs-content {
 
-     @import './buttons';
+     @include meta.load-css('buttons');
     
   }
 

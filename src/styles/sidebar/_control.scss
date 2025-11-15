@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "sass:meta";
 .control {
   --script-background: white;
   --r-side-background: linear-gradient(
@@ -101,11 +103,11 @@
         to bottom,
         $color-ledge,
         $color-ledge 49.9%,
-        darken($color-ledge, 5%) 50%,
-        darken($color-ledge, 5%) 100%
+        color.adjust($color-ledge, $lightness: -5%) 50%,
+        color.adjust($color-ledge, $lightness: -5%) 100%
       ) !default;
       $thumb-color: $color-primary !default;
-      $thumb-border-color: invert($thumb-color) !default;
+      $thumb-border-color: color.invert($thumb-color) !default;
       $thumb-radius: 7.5px !default;
       $thumb-height: 15px !default;
       $thumb-width: 15px !default;
@@ -131,18 +133,18 @@
         cursor: pointer;
         height: $thumb-height;
         width: $thumb-width;
-        box-shadow: 0 0 0 0px transparentize($thumb-color, $amount: 0.5);
+        box-shadow: 0 0 0 0px color.adjust($thumb-color, $alpha: -0.5);
         border: 0px solid $thumb-border-color;
         transition: box-shadow 0.3s ease-in-out, border 0.3s ease-in-out;
         &:hover {
           border: 1.5px solid $thumb-border-color;
-          box-shadow: 0 0 0 4px transparentize($thumb-color, $amount: 0.5);
+          box-shadow: 0 0 0 4px color.adjust($thumb-color, $alpha: -0.5);
         }
       }
 
       .slider {
         -webkit-appearance: none;
-        margin: $thumb-height / 2 0;
+        margin: $thumb-height * 0.5 0;
         width: $track-width;
 
         &:focus {
@@ -171,8 +173,8 @@
         &::-webkit-slider-thumb {
           @include thumb;
           -webkit-appearance: none;
-          margin-top: ((-$track-border-width * 2 + $track-height) / 2) -
-            ($thumb-height / 2);
+          margin-top: ((-$track-border-width * 2 + $track-height) * 0.5) -
+            ($thumb-height * 0.5);
         }
 
         &::-moz-range-track {
@@ -190,7 +192,7 @@
           @include track;
           background: transparent;
           border-color: transparent;
-          border-width: ($thumb-height / 2) 0;
+          border-width: ($thumb-height * 0.5) 0;
           color: transparent;
         }
 
@@ -439,4 +441,4 @@
   }
 }
 
-@import "./animation";
+@include meta.load-css("animation");

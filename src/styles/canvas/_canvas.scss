@@ -1,3 +1,4 @@
+@use "sass:meta";
 /* for canvas */
 /* for canvas */
 /* for canvas */
@@ -31,4 +32,4 @@
 
 }
 
-@import "_tools";
+@include meta.load-css("_tools");

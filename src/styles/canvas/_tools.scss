@@ -2,8 +2,8 @@
 /* for tools */
 /* for tools */
 
-@import 'sub-tools';
-@import 'main-tools';
+@use 'sub-tools';
+@use 'main-tools';
 
 .do-redo {
   display: none;
