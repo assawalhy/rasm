@@ -1,7 +1,8 @@
 import { ExistBefore, UndefError } from '../core/Errors/index.js';
 import { Empty, EvalExpr, Func, Point, Slider, Variable, XYfunction, Xfunction } from '../core/GraphChildren/index.js';
 import { getJSfunction } from '../core/global.js';
-import { addControl, genRandomName, keypadSettings, removeControl, slidersController } from './global.js';
+import { addControl, genRandomName, keypadSettings, removeControl } from './global.js';
+import { slidersAutoplay } from './slidersController.js';
 import sketch from './sketch.js';
 
 export default class ChildControl {
@@ -59,9 +60,9 @@ export default class ChildControl {
         this.__updateEvalExpr();
       };
     } else if (value instanceof Slider) {
-      value.handlers.onchange = (updateSlider = true, updateSketch = true) => {
-        if (updateSlider) this.sliderProps.$slider[0].value = this._graphChild.getValue();
-        if (updateSketch) sketch.update(true, false);
+      value.handlers.onchange = ({ updateSliderElement = true, updateSketch = true } = {}) => {
+        if (updateSliderElement && this.sliderProps) this.sliderProps.slider.value = this._graphChild.getValue();
+        if (updateSketch) sketch.update({ redraw: true, redrawCoors: false });
       };
     }
 
@@ -107,8 +108,9 @@ export default class ChildControl {
       if (this.status === 'ready') {
         // pause running slider
         if (this._graphChild instanceof Slider) {
-          if ($('.slider-outer', this.elt).hasClass('play')) {
-            $('.play-pause', this.elt).trigger('click');
+          const sliderOuter = this.elt.querySelector('.slider-outer');
+          if (sliderOuter?.classList.contains('play')) {
+            this.elt.querySelector('.play-pause')?.click();
           }
         }
         this.status = 'updating';
@@ -216,8 +218,9 @@ export default class ChildControl {
 
   focus(focusTheField = true) {
     if (this._graphChild instanceof Slider) {
-      if ($('.slider-outer', this.elt).hasClass('play')) {
-        $('.play-pause', this.elt).trigger('click');
+      const sliderOuter = this.elt.querySelector('.slider-outer');
+      if (sliderOuter?.classList.contains('play')) {
+        this.elt.querySelector('.play-pause')?.click();
       }
     }
     if (keypadSettings.focusedControl && keypadSettings.focusedControl !== this) keypadSettings.focusedControl.blur();
@@ -293,51 +296,61 @@ export default class ChildControl {
         buttonsFuncs += '</div>';
       }
 
-      const notExistElt = $(`<div class='not-exist'>${buttonsVars + buttonsFuncs}</div>`);
+      const notExistElt = document.createElement('div');
+      notExistElt.className = 'not-exist';
+      notExistElt.innerHTML = buttonsVars + buttonsFuncs;
 
       const me = this;
-      $('.var', notExistElt).bind('click', function () {
-        const id = this.innerText;
-        // let gc = new ChildControl(new Slider({ id, value: 1, sketch: sketch }));
-        addControl(`${id} = 1`, Number.parseInt(me.orderELT.textContent));
+      notExistElt.querySelectorAll('.var').forEach((varBtn) => {
+        varBtn.addEventListener('click', function () {
+          const id = this.innerText;
+          // let gc = new ChildControl(new Slider({ id, value: 1, sketch: sketch }));
+          addControl(`${id} = 1`, Number.parseInt(me.orderELT.textContent));
+        });
       });
 
-      $('.func', notExistElt).bind('click', function () {
-        /// choosing a param
-        let param = 'a';
-        let counter = 0;
-        let end;
-        while (Object.prototype.hasOwnProperty.call(Math, param) && !end) {
-          if (counter > 300) {
-            param = 'a';
-            end = 1;
-          } else if (counter > 100) {
-            param = String.fromCharCode(math.random(65, 90));
-          } else {
-            param = String.fromCharCode(math.random(97, 122));
+      notExistElt.querySelectorAll('.func').forEach((funcBtn) => {
+        funcBtn.addEventListener('click', function () {
+          /// choosing a param
+          let param = 'a';
+          let counter = 0;
+          let end;
+          while (Object.prototype.hasOwnProperty.call(Math, param) && !end) {
+            if (counter > 300) {
+              param = 'a';
+              end = 1;
+            } else if (counter > 100) {
+              param = String.fromCharCode(math.random(65, 90));
+            } else {
+              param = String.fromCharCode(math.random(97, 122));
+            }
+            counter++;
           }
-          counter++;
-        }
-        const id = this.textContent;
-        // let newChild = new ChildControl(new Func({ id, expr: new MagicalParser.Node('variable', [], { name: param }), params: [param], sketch: sketch }));
-        addControl(`${id}\\left(${param}\\right) = ${param}`, Number.parseInt(me.orderELT.textContent));
+          const id = this.textContent;
+          // let newChild = new ChildControl(new Func({ id, expr: new MagicalParser.Node('variable', [], { name: param }), params: [param], sketch: sketch }));
+          addControl(`${id}\\left(${param}\\right) = ${param}`, Number.parseInt(me.orderELT.textContent));
+        });
       });
 
-      $('.all-vars', notExistElt).bind('click', () => {
-        const vars = this.elt.querySelectorAll('.not-exist .var');
-        for (const v of vars) {
-          v.click();
-        }
+      notExistElt.querySelectorAll('.all-vars').forEach((allVarsBtn) => {
+        allVarsBtn.addEventListener('click', () => {
+          const vars = this.elt.querySelectorAll('.not-exist .var');
+          for (const v of vars) {
+            v.click();
+          }
+        });
       });
 
-      $('.all-funcs', notExistElt).bind('click', () => {
-        const funcs = this.elt.querySelectorAll('.not-exist .func');
-        for (const f of funcs) {
-          f.click();
-        }
+      notExistElt.querySelectorAll('.all-funcs').forEach((allFuncsBtn) => {
+        allFuncsBtn.addEventListener('click', () => {
+          const funcs = this.elt.querySelectorAll('.not-exist .func');
+          for (const f of funcs) {
+            f.click();
+          }
+        });
       });
 
-      this.elt.querySelector('.main').append(notExistElt[0]);
+      this.elt.querySelector('.main').appendChild(notExistElt);
       this.isError = 1;
     } else {
       if (this.isError) {
@@ -347,16 +360,22 @@ export default class ChildControl {
         this.elt.classList.add('error');
         this.isError = true;
         this.graphChild.renderable = false;
-        const errorELT = $(`
-            <div class="error-elt">
-               <i class="fas fa-bug"></i>
-            </div>
-            `);
-        errorELT[0].setAttribute('data-balloon-pos', 'right');
-        errorELT[0].setAttribute('aria-label', e.message);
-        errorELT.hide();
-        this.elt.querySelector('.side-status').append(errorELT[0]);
-        errorELT.fadeOut(0).delay(200).fadeIn(500);
+        const errorELT = document.createElement('div');
+        errorELT.className = 'error-elt';
+        errorELT.innerHTML = '<i class="fas fa-bug"></i>';
+        errorELT.setAttribute('data-balloon-pos', 'right');
+        errorELT.setAttribute('aria-label', e.message);
+        errorELT.style.display = 'none';
+        this.elt.querySelector('.side-status').appendChild(errorELT);
+        // Fade in animation
+        setTimeout(() => {
+          errorELT.style.transition = 'opacity 0.5s';
+          errorELT.style.opacity = '0';
+          errorELT.style.display = '';
+          setTimeout(() => {
+            errorELT.style.opacity = '1';
+          }, 10);
+        }, 200);
       }
       console.log(e);
     }
@@ -364,8 +383,9 @@ export default class ChildControl {
 
   remove(removeGraphChild = true) {
     if (this._graphChild instanceof Slider) {
-      if ($('.slider-outer', this.elt).hasClass('play')) {
-        $('.play-pause', this.elt).trigger('click');
+      const sliderOuter = this.elt.querySelector('.slider-outer');
+      if (sliderOuter?.classList.contains('play')) {
+        this.elt.querySelector('.play-pause')?.click();
       }
     }
     removeControl(this);
@@ -433,14 +453,16 @@ export default class ChildControl {
 
   __toXfunction() {
     const sideStatus = this.elt.querySelector('.side-status');
-    const $visibleElt = $(`<div class="visible-elt special-elt visible"><div class="inner"></div></div>`);
-    $visibleElt.bind('click', () => {
-      $visibleElt.toggleClass('visible');
-      this.graphChild.renderable = $visibleElt.hasClass('visible');
+    const visibleElt = document.createElement('div');
+    visibleElt.className = 'visible-elt special-elt visible';
+    visibleElt.innerHTML = '<div class="inner"></div>';
+    visibleElt.addEventListener('click', () => {
+      visibleElt.classList.toggle('visible');
+      this.graphChild.renderable = visibleElt.classList.contains('visible');
       this.graphChild.update();
       sketch.draw();
     });
-    sideStatus.append($visibleElt[0]);
+    sideStatus.appendChild(visibleElt);
     this.__updateXfunction();
   }
 
@@ -450,37 +472,46 @@ export default class ChildControl {
   }
 
   __toEvalExpr() {
-    const value = $(`<div class="value special-elt"><span></span></div>`);
-    value.hide();
-    this.elt.querySelector('.main').append(value[0]);
-    value.fadeIn();
-    const valueType = $(
-      `<div class="value-type special-elt" type=decimal>
-            <span><i class="fas fa-divide"></i></span>
-         </div>`,
-    );
-    this.elt.querySelector('.side-status').append(valueType[0]);
-    valueType.click(() => {
-      switch (valueType.attr('type')) {
+    const value = document.createElement('div');
+    value.className = 'value special-elt';
+    value.innerHTML = '<span></span>';
+    value.style.display = 'none';
+    this.elt.querySelector('.main').appendChild(value);
+    // Fade in animation
+    setTimeout(() => {
+      value.style.transition = 'opacity 0.3s';
+      value.style.opacity = '0';
+      value.style.display = '';
+      setTimeout(() => {
+        value.style.opacity = '1';
+      }, 10);
+    }, 0);
+    const valueType = document.createElement('div');
+    valueType.className = 'value-type special-elt';
+    valueType.setAttribute('type', 'decimal');
+    valueType.innerHTML = '<span><i class="fas fa-divide"></i></span>';
+    this.elt.querySelector('.side-status').appendChild(valueType);
+    valueType.addEventListener('click', () => {
+      switch (valueType.getAttribute('type')) {
         case 'decimal':
-          valueType.attr('type', 'fract');
-          value.height(56);
+          valueType.setAttribute('type', 'fract');
+          value.style.height = '56px';
           break;
         case 'fract':
-          valueType.attr('type', 'quotient');
-          value.height(56);
+          valueType.setAttribute('type', 'quotient');
+          value.style.height = '56px';
           break;
         case 'quotient':
-          valueType.attr('type', 'decimal');
-          value.height(33);
+          valueType.setAttribute('type', 'decimal');
+          value.style.height = '33px';
           break;
       }
       this.__updateEvalExpr();
     });
 
     this.sliderProps = {
-      valueType: valueType[0],
-      valueElt: value[0],
+      valueType: valueType,
+      valueElt: value,
     };
     // this.__updateEvalExpr(); /// will be done on updating the sktech
   }
@@ -543,111 +574,122 @@ export default class ChildControl {
 
   __toSlider() {
     /// adding slider
-    const $sliderOuter = $(`
-      <div class="slider-outer special-elt">
-         <div class='range-container'>
-            <span class='slider-controller-toggle'>
-               <i class="fas fa-angle-right right"></i>
-            </span>
-            <input type=range class=slider min=-5 max=5 step=0.01 />
-            <span class='play-pause'>
-               <svg role="img" width=15 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                  <path class="path"></path>
-               </sbg>
-            </span>
-         </div>
-         <div class='slider-controller'>
-            <label>min</label>:<span class="math-field min">-5</span>
-            <label>max</label>:<span class="math-field max">5</span>
-            <label>step</label>:<span class="math-field step">0.01</span>
-         </div>
-      </div>`);
-    this.elt.querySelector('.main').append($sliderOuter[0]);
-    const $slider = $('.slider', $sliderOuter);
+    const sliderOuter = document.createElement('div');
+    sliderOuter.className = 'slider-outer special-elt';
+    sliderOuter.innerHTML = `
+      <div class='range-container'>
+         <span class='slider-controller-toggle'>
+            <i class="fas fa-angle-right right"></i>
+         </span>
+         <input type=range class=slider min=-5 max=5 step=0.01 />
+         <span class='play-pause'>
+            <svg role="img" width=15 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+               <path class="path"></path>
+            </svg>
+         </span>
+      </div>
+      <div class='slider-controller'>
+         <label>min</label>:<span class="math-field min">-5</span>
+         <label>max</label>:<span class="math-field max">5</span>
+         <label>step</label>:<span class="math-field step">0.01</span>
+      </div>`;
+    this.elt.querySelector('.main').appendChild(sliderOuter);
+    const slider = sliderOuter.querySelector('.slider');
+
+    const playPause = sliderOuter.querySelector('.play-pause');
+    if (playPause) {
+      playPause.addEventListener('click', () => {
+        sliderOuter.classList.toggle('play');
+        if (sliderOuter.classList.contains('play')) {
+          slidersAutoplay.push(this);
+        } else {
+          slidersAutoplay.pop(this);
+        }
+      });
+    }
+
+    const pause = () => {
+      if (sliderOuter.classList.contains('play')) {
+        const playPause = sliderOuter.querySelector('.play-pause');
+        if (playPause) playPause.click();
+      }
+    }
 
     // sliderControllerMathFields
     const attrs = {
-      min: MQ.MathField($sliderOuter[0].querySelector('.slider-controller .math-field.min'), {
+      min: MQ.MathField(sliderOuter.querySelector('.slider-controller .math-field.min'), {
         handlers: {
           edit: () => {
-            if ($sliderOuter.hasClass('play')) {
-              $('.play-pause', $sliderOuter).trigger('click');
-            }
-            $slider[0].min = getJSfunction(attrs.min.latex())();
+            pause();
+            slider.min = getJSfunction(attrs.min.latex())();
           },
         },
       }),
-      max: MQ.MathField($sliderOuter[0].querySelector('.slider-controller .math-field.max'), {
+      max: MQ.MathField(sliderOuter.querySelector('.slider-controller .math-field.max'), {
         handlers: {
           edit: () => {
-            if ($sliderOuter.hasClass('play')) {
-              $('.play-pause', $sliderOuter).trigger('click');
-            }
-            $slider[0].max = getJSfunction(attrs.max.latex())();
+            pause();
+            slider.max = getJSfunction(attrs.max.latex())();
           },
         },
       }),
-      step: MQ.MathField($sliderOuter[0].querySelector('.slider-controller .math-field.step'), {
+      step: MQ.MathField(sliderOuter.querySelector('.slider-controller .math-field.step'), {
         handlers: {
           edit: () => {
-            if ($sliderOuter.hasClass('play')) {
-              $('.play-pause', $sliderOuter).trigger('click');
-            }
-            $slider[0].step = getJSfunction(attrs.step.latex())();
+            pause();
+            slider.step = getJSfunction(attrs.step.latex())();
           },
         },
       }),
       /** oscillate, forwards, backwards*/
       dir: 'oscillate',
       // positive int number represents the steps per second (the unit: sps)
-      speed: 400,
+      speed: 50, // how much percent of the full slider per second
       // to change the direction of the slider will working (the play button has been pressed)
-      speedModifier: 1,
+      sliderDirection: 1,
     };
 
     /// the special properties for this specific type of GraphChild
     this.sliderProps = {
-      $slider,
+      slider,
+      sliderOuter,
       attrs,
       invokeOnchange: true,
     };
 
-    {
-      $slider
-        .on('change', (event, ...handlerParams) => {
-          if (this.sliderProps.invokeOnchange) {
-            this.graphChild.setValue(Number.parseFloat($slider[0].value), handlerParams);
-            this.setScript(`${this.graphChild.id} = ${$slider[0].value}`, false);
-          }
-        })
-        .on('mousemove touchmove', () => {
-          if ($slider[0].ismousedown) {
-            $slider.trigger('change', false);
-          }
-        })
-        .on('mousedown touchstart', () => {
-          if ($sliderOuter.hasClass('play')) {
-            $('.play-pause', $sliderOuter).trigger('click');
-          }
-          $slider[0].ismousedown = true;
-        })
-        .on('mouseup touchend', () => {
-          $slider[0].ismousedown = false;
-        });
+    slider.addEventListener('onchange', (event) => {
+      if (this.sliderProps.invokeOnchange) {
+        const handlerParams = event.handlerParams || [];
+        this.graphChild.setValue(Number.parseFloat(slider.value), handlerParams);
+        this.setScript(`${this.graphChild.id} = ${slider.value}`, false);
+      }
+    });
 
-      $('.slider-controller-toggle', $sliderOuter).bind('click', () => {
-        $sliderOuter.toggleClass('controller-opended');
-      });
+    const handleMouseMove = () => {
+      if (slider.ismousedown) {
+        slider.dispatchEvent(new CustomEvent('onchange', { handlerParams: [{ updateSliderElement: false }] }));
+      }
+    };
+    slider.addEventListener('mousemove', handleMouseMove);
+    slider.addEventListener('touchmove', handleMouseMove);
 
-      const speedModifier = 1;
+    const handleMouseDown = () => {
+      pause();
+      slider.ismousedown = true;
+    };
+    slider.addEventListener('mousedown', handleMouseDown);
+    slider.addEventListener('touchstart', handleMouseDown);
 
-      $('.play-pause', $sliderOuter).bind('click', () => {
-        $sliderOuter.toggleClass('play');
-        if ($sliderOuter.hasClass('play')) {
-          slidersController.push(this);
-        } else {
-          slidersController.pop(this);
-        }
+    const handleMouseUp = () => {
+      slider.ismousedown = false;
+    };
+    slider.addEventListener('mouseup', handleMouseUp);
+    slider.addEventListener('touchend', handleMouseUp);
+
+    const sliderControllerToggle = sliderOuter.querySelector('.slider-controller-toggle');
+    if (sliderControllerToggle) {
+      sliderControllerToggle.addEventListener('click', () => {
+        sliderOuter.classList.toggle('controller-opended');
       });
     }
 
@@ -655,7 +697,7 @@ export default class ChildControl {
   }
 
   __updateSlider() {
-    const slider = this.sliderProps.$slider[0];
+    const slider = this.sliderProps.slider;
     const value = this.graphChild.getValue();
 
     this.sliderProps.attrs.min.latex(Math.min(Number.parseFloat(slider.min), Number.parseFloat(value)));
@@ -674,6 +716,6 @@ export default class ChildControl {
     // this.__updateEvalExpr(); /// will be done on updating the sktech
   }
 
-  __updateVariable() {}
+  __updateVariable() { }
   //#endregion
 }

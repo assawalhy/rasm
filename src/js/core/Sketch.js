@@ -147,7 +147,7 @@ export default class Sketch {
     return this.children.get(id);
   }
 
-  update = (draw = true, coors = true) => {
+  update = ({redraw = true, redrawCoors = true} = {}) => {
     // this.updator.worker.onmessage = (msg) => {
     // };
     // this.updator.worker.postMessage('update');
@@ -160,20 +160,20 @@ export default class Sketch {
           child.update(this.childrenCanvas);
         }
       }
-      if (draw) {
-        this.draw(coors);
+      if (redraw) {
+        this.draw({redrawCoors});
       }
       if (this.status === 're-update') {
         this.status = 'ready';
-        this.update(draw, coors);
+        this.update({redraw, redrawCoors});
       } else {
         this.status = 'ready';
       }
     }
   }
 
-  draw = (coors = true) => {
-    if (coors) {
+  draw = ({redrawCoors = true} = {}) => {
+    if (redrawCoors) {
       this.canvas.clear();
       this.coor.draw(this.canvas);
     }

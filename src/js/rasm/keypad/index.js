@@ -1,4 +1,4 @@
-import { checkSM, keypadSettings, resize, sidebar } from '../global.js';
+import { checkScreenType, keypadSettings, resize, sidebar } from '../global.js';
 import keypadEvents from './events.js';
 
 export default function setupKeypad() {
@@ -23,7 +23,7 @@ export default function setupKeypad() {
     } else {
       parent.insertBefore(keypadSettings.showHideKeyBtn, parent.firstElementChild);
     }
-    if (checkSM.smallScreen) {
+    if (checkScreenType.smallScreen) {
       resize();
     }
 

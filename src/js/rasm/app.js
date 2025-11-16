@@ -1,6 +1,6 @@
 import ChildControl from './ChildControl.js';
 import setEvents from './events/index.js';
-import { addControl, checkSM, getContainment, keypadSettings, resize, sidebar, updateObjsOrder } from './global.js';
+import { addControl, checkScreenType, getContainment, keypadSettings, resize, sidebar, updateObjsOrder } from './global.js';
 import setupKeypad from './keypad/index.js';
 import sketch from './sketch.js';
 
@@ -102,7 +102,7 @@ export default function setupAPP() {
   });
 
   resize.prevSize = { width: 1000, height: 1000 }; /// the app is desined upon the large screen so this should be the default
-  checkSM();
+  checkScreenType();
   resize.prevSize = { width: window.innerWidth, height: window.innerHeight };
 
   const mathFields = $('.math-field');

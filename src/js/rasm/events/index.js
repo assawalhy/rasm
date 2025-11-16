@@ -1,5 +1,5 @@
 import ChildControl from '../ChildControl.js';
-import { addControl, checkSM, keypadSettings, resize, sidebar } from '../global.js';
+import { addControl, checkScreenType, keypadSettings, resize, sidebar } from '../global.js';
 import canvasEvents from './canvasEvents.js';
 import toolsEvents from './toolsEvents.js';
 

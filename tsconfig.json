@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
   },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "public", "src/js/third-party"]
