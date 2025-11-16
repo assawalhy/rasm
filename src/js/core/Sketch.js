@@ -10,13 +10,10 @@ export default class Sketch {
     this.coor = new Coordinates(this.gs);
     this.children = new Map();
     this.childrenCanvas.ctx.miterLimit = 1;
-    
     this.scriptParser = new MagicalParser.CustomParsers.Math();
-
-    // this.updator = { worker: new Worker('./updateChildren.js'), data: { status: 'ready' } };
   }
 
-  childFromScript(script, propsTOset = {}) {
+  childFromScript = (script, propsTOset = {}) => {
     const parsedString = this.getChildParser.parse(script.replace(/\^/g, '**'));
     return childFromParsed(parsedString, propsTOset);
   }
@@ -142,7 +139,7 @@ export default class Sketch {
     return new EvalExpr(Object.assign(propsTOset, { expr: parsedString, drawable: false }));
   }
 
-  getChildById(id) {
+  getChildById = (id) => {
     // for (let index = 0; index < this.children.length; index++) {
     //     if (this.children[index].id === id) return { child, index };
     //     continue;
@@ -150,7 +147,7 @@ export default class Sketch {
     return this.children.get(id);
   }
 
-  update(draw = true, coors = true) {
+  update = (draw = true, coors = true) => {
     // this.updator.worker.onmessage = (msg) => {
     // };
     // this.updator.worker.postMessage('update');
@@ -160,7 +157,7 @@ export default class Sketch {
       this.status = 'updating';
       for (const child of this.children.values()) {
         if (child) {
-          child.update();
+          child.update(this.canvas);
         }
       }
       if (draw) {
@@ -175,19 +172,24 @@ export default class Sketch {
     }
   }
 
-  draw(coors = true) {
+  draw = (coors = true) => {
     if (coors) {
       this.canvas.clear();
       this.coor.draw(this.canvas);
     }
+
     // let vp = this.gs.viewport;
     // this.childrenCanvas.clear(null, [vp.xmin, vp.ymin, vp.width, vp.height]);
-    this.childrenCanvas.clear();
+    // this.childrenCanvas.clear();
 
     for (const child of this.children.values()) {
       if (child) {
-        child.draw(this.childrenCanvas);
+        // child.draw(this.childrenCanvas);
+        child.draw(this.canvas);
       }
     }
+
+    // Draw childrenCanvas onto the main canvas
+    // this.canvas.ctx.drawImage(this.childrenCanvas.elt, 0, 0);
   }
 }

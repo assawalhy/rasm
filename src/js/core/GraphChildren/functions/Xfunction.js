@@ -1,8 +1,5 @@
 import drawing from '../../drawing/index.js';
 import { getJSfunction } from '../../global.js';
-/****************************************************************/
-/****************************************************************/
-/****************************************************************/
 import GraphChild from '../GraphChild.js';
 
 export default class Xfunction extends GraphChild {
@@ -76,10 +73,12 @@ export default class Xfunction extends GraphChild {
     this.path = path;
   }
 
-  _draw(canvas) {
+  _draw(canvas /*: import('../../Canvas.js') */) {
     const ctx = canvas.ctx;
-    ctx.strokeStyle = this.pen.color.toString();
+    ctx.strokeStyle = this.pen.color.toString()
     ctx.lineWidth = this.pen.weight;
+    ctx.lineJoin = 'miter';
+    ctx.miterLimit = 1;
     ctx.stroke(this.path);
   }
 

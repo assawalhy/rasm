@@ -28,7 +28,7 @@ export default class GraphChild {
           ' property, or it is falsy value',
       );
     }
-    
+
     this.sketch = options.sketch;
     this.gs = this.sketch.gs;
     this.coorManager = this.gs.coorManager;
@@ -71,9 +71,9 @@ export default class GraphChild {
     }
   }
 
-  draw() {
+  draw(canvas) {
     if (this.renderable) {
-      this._draw(this.sketch.childrenCanvas);
+      this._draw(canvas || this.sketch.childrenCanvas);
     }
   }
 

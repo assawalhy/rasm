@@ -12,5 +12,9 @@ head
   script(src="/libraries/jquery/jquery-3.4.1.min.js")
   script(src="/libraries/jquery/jquery-ui.min.js")
   link(rel="stylesheet", href="/libraries/jquery/jquery-ui.min.css")
+
+  script.
+    window.disableNativeKeypad = /(android|iphone|ipad)/i.test(window.navigator.userAgent);
+
   script(src="/libraries/mathquill-0.10.1/mathquill.js")
   link(rel="stylesheet", href="/libraries/mathquill-0.10.1/mathquill.css")
