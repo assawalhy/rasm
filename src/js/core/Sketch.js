@@ -3,9 +3,9 @@ import Coordinates from './Coordinates.js';
 import { Empty, EvalExpr, Func, Point, Slider, Variable, Xfunction } from './GraphChildren/index.js';
 import GraphSettings from './GraphSetting/GraphSettings.js';
 export default class Sketch {
-  constructor(canvas) {
+  constructor(canvas, childrenCanvas) {
     this.canvas = new Canvas({ canvas });
-    this.childrenCanvas = new Canvas();
+    this.childrenCanvas = new Canvas({ canvas: childrenCanvas });
     this.gs = new GraphSettings(this, this.canvas.width, this.canvas.height);
     this.coor = new Coordinates(this.gs);
     this.children = new Map();
@@ -157,7 +157,7 @@ export default class Sketch {
       this.status = 'updating';
       for (const child of this.children.values()) {
         if (child) {
-          child.update(this.canvas);
+          child.update(this.childrenCanvas);
         }
       }
       if (draw) {
@@ -180,16 +180,12 @@ export default class Sketch {
 
     // let vp = this.gs.viewport;
     // this.childrenCanvas.clear(null, [vp.xmin, vp.ymin, vp.width, vp.height]);
-    // this.childrenCanvas.clear();
+    this.childrenCanvas.clear();
 
     for (const child of this.children.values()) {
       if (child) {
-        // child.draw(this.childrenCanvas);
-        child.draw(this.canvas);
+        child.draw(this.childrenCanvas);
       }
     }
-
-    // Draw childrenCanvas onto the main canvas
-    // this.canvas.ctx.drawImage(this.childrenCanvas.elt, 0, 0);
   }
 }

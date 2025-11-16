@@ -58,10 +58,10 @@ export default class GraphChild {
    * methods are here
    */
 
-  update(handlerArgs = []) {
+  update(canvas, handlerArgs = []) {
     if (this.renderable) {
       try {
-        this._update(this.sketch.childrenCanvas, handlerArgs);
+        this._update(canvas);
       } catch (e) {
         this.error(e);
       }
@@ -73,7 +73,7 @@ export default class GraphChild {
 
   draw(canvas) {
     if (this.renderable) {
-      this._draw(canvas || this.sketch.childrenCanvas);
+      this._draw(canvas);
     }
   }
 

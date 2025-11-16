@@ -60,7 +60,7 @@ export default class ChildControl {
       };
     } else if (value instanceof Slider) {
       value.handlers.onchange = (updateSlider = true, updateSketch = true) => {
-        if (updateSlider) this.specialProps.$slider[0].value = this._graphChild.getValue();
+        if (updateSlider) this.sliderProps.$slider[0].value = this._graphChild.getValue();
         if (updateSketch) sketch.update(true, false);
       };
     }
@@ -478,7 +478,7 @@ export default class ChildControl {
       this.__updateEvalExpr();
     });
 
-    this.specialProps = {
+    this.sliderProps = {
       valueType: valueType[0],
       valueElt: value[0],
     };
@@ -491,10 +491,10 @@ export default class ChildControl {
       if (!Number.isNaN(value)) {
         value += 0; /// +0 is here to convert the object (representing the valueOf a variable) into a number
         value = Number.parseFloat(value.toFixed(10));
-        switch (this.specialProps.valueType.getAttribute('type')) {
+        switch (this.sliderProps.valueType.getAttribute('type')) {
           case 'decimal':
             {
-              this.specialProps.valueElt.innerHTML = `<span>${value}</span>`;
+              this.sliderProps.valueElt.innerHTML = `<span>${value}</span>`;
             }
             break;
           case 'fract':
@@ -502,13 +502,13 @@ export default class ChildControl {
               if (value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length < 5) {
                 const fraction = MathPackage.Core.fraction(value);
                 if (fraction.denominator === 1) {
-                  this.specialProps.valueElt.innerHTML = `<span>${fraction.numerator}</span>`;
+                  this.sliderProps.valueElt.innerHTML = `<span>${fraction.numerator}</span>`;
                 } else {
-                  this.specialProps.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
-                  MQ.StaticMath(this.specialProps.valueElt.children[0]);
+                  this.sliderProps.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+                  MQ.StaticMath(this.sliderProps.valueElt.children[0]);
                 }
               } else {
-                this.specialProps.valueElt.innerHTML = `<span>${value}</span>`;
+                this.sliderProps.valueElt.innerHTML = `<span>${value}</span>`;
               }
             }
             break;
@@ -517,26 +517,26 @@ export default class ChildControl {
               if (value.indexOf('.') > -1 && value.split('.')[1].length < 5) {
                 const fraction = MathPackage.Core.quotientRemainder(value);
                 if (fraction.numerator === 0) {
-                  this.specialProps.valueElt.innerHTML = `<span>${fraction.quotient}</span>`;
+                  this.sliderProps.valueElt.innerHTML = `<span>${fraction.quotient}</span>`;
                 } else {
                   if (fraction.quotient === 0) {
-                    this.specialProps.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+                    this.sliderProps.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
                   } else {
-                    this.specialProps.valueElt.innerHTML = `<span>${fraction.quotient}\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+                    this.sliderProps.valueElt.innerHTML = `<span>${fraction.quotient}\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
                   }
-                  MQ.StaticMath(this.specialProps.valueElt.children[0]);
+                  MQ.StaticMath(this.sliderProps.valueElt.children[0]);
                 }
               } else {
-                this.specialProps.valueElt.innerHTML = `<span>${value}</span>`;
+                this.sliderProps.valueElt.innerHTML = `<span>${value}</span>`;
               }
             }
             break;
         }
       } else {
-        this.specialProps.valueElt.innerHTML = '<span>NaN</span>';
+        this.sliderProps.valueElt.innerHTML = '<span>NaN</span>';
       }
     } catch (e) {
-      this.specialProps.valueElt.innerHTML = '<span>NaN</span>';
+      this.sliderProps.valueElt.innerHTML = '<span>NaN</span>';
       this.error(e);
     }
   }
@@ -606,7 +606,7 @@ export default class ChildControl {
     };
 
     /// the special properties for this specific type of GraphChild
-    this.specialProps = {
+    this.sliderProps = {
       $slider,
       attrs,
       invokeOnchange: true,
@@ -615,7 +615,7 @@ export default class ChildControl {
     {
       $slider
         .on('change', (event, ...handlerParams) => {
-          if (this.specialProps.invokeOnchange) {
+          if (this.sliderProps.invokeOnchange) {
             this.graphChild.setValue(Number.parseFloat($slider[0].value), handlerParams);
             this.setScript(`${this.graphChild.id} = ${$slider[0].value}`, false);
           }
@@ -655,21 +655,21 @@ export default class ChildControl {
   }
 
   __updateSlider() {
-    const slider = this.specialProps.$slider[0];
+    const slider = this.sliderProps.$slider[0];
     const value = this.graphChild.getValue();
 
-    this.specialProps.attrs.min.latex(Math.min(Number.parseFloat(slider.min), Number.parseFloat(value)));
-    this.specialProps.attrs.max.latex(Math.max(Number.parseFloat(slider.max), Number.parseFloat(value)));
+    this.sliderProps.attrs.min.latex(Math.min(Number.parseFloat(slider.min), Number.parseFloat(value)));
+    this.sliderProps.attrs.max.latex(Math.max(Number.parseFloat(slider.max), Number.parseFloat(value)));
 
-    this.specialProps.invokeOnchange = false;
+    this.sliderProps.invokeOnchange = false;
     slider.value = value;
-    this.specialProps.invokeOnchange = true;
+    this.sliderProps.invokeOnchange = true;
 
     // this.setScript(this.graphChild.id + ' = ' + slider.value, false);
   }
 
   __toVariable() {
-    this.specialProps = {};
+    this.sliderProps = {};
 
     // this.__updateEvalExpr(); /// will be done on updating the sktech
   }

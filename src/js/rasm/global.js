@@ -170,9 +170,9 @@ export const slidersController = {
    * @param {ChildControl} sliderControl
    */
   push: function (sliderControl) {
-    const $slider = sliderControl.specialProps.$slider;
+    const $slider = sliderControl.sliderProps.$slider;
     const slider = $slider[0];
-    const attrs = sliderControl.specialProps.attrs;
+    const attrs = sliderControl.sliderProps.attrs;
     const sliderConfig = {
       min: Number.parseFloat(slider.min),
       max: Number.parseFloat(slider.max),
