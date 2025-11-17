@@ -545,7 +545,7 @@ export default class ChildControl {
             break;
           case 'quotient':
             {
-              if (value.indexOf('.') > -1 && value.split('.')[1].length < 5) {
+              if (value.toString().indexOf('.') > -1 && value.toString().split('.')[1].length < 5) {
                 const fraction = MathPackage.Core.quotientRemainder(value);
                 if (fraction.numerator === 0) {
                   this.sliderProps.valueElt.innerHTML = `<span>${fraction.quotient}</span>`;
