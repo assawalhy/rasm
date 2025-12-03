@@ -1,0 +1,1 @@
+- I'm using Bun.js as a package manager and test toolchain, so to run Js scripts (i.e. .cjs) file you should use Bun to to so.

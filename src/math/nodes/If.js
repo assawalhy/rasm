@@ -1,0 +1,52 @@
+import Node from '../Node.js';
+
+class If extends Node {
+  /**
+   * condition, iftrue, iffalse
+   */
+  constructor() {
+    super([condition, iftrue, iffalse], 3);
+    this.syntaxType = 'function';
+  }
+
+  calculate(cs, tempVars) {
+    const condition = this.children[0].calculate(cs, tempVars);
+    if (Number.isNaN(condition)) return Number.NaN;
+    if (condition === 1) {
+      return this.children[1].calculate(cs, tempVars);
+    }
+    if (this.children[2] != null) {
+      return this.children[2].calculate(cs, tempVars);
+    }
+    return Number.NaN;
+  }
+
+  derivative(cs) {
+    if (this.children[2] != null)
+      return new If(this.children[0], this.children[1].derivative(cs), this.children[2].derivative(cs));
+
+    return new If(this.children[0], this.children[1].derivative(cs), null);
+  }
+
+  simplify() {
+    return new If(this.children[0].simplify(), this.children[1].simplify(), this.children[2].simplify());
+  }
+
+  isEqual(node) {
+    if (this.constructor === node.constructor) {
+      for (let i = 0; i < this.children.length; i++) {
+        if (!this.children[i].simplify().isEqual(node.children[i].simplify())) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  toString() {
+    if (this.children[2]) return `if(${this.children[0]}, ${this.children[1]}, ${this.children[2]})`;
+
+    return `if(${this.children[0]}, ${this.children[1]})`;
+  }
+}
+
+export default If;

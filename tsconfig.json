@@ -12,8 +12,11 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
+    "noEmit": true,
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.js", "**/*.tsx"],
   "exclude": ["node_modules", "public", "src/js/third-party"]
 }
-

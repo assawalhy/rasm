@@ -208,7 +208,7 @@ The project uses two build systems:
 
 ### File Structure After Build
 
-```
+```txt
 dist/
 ├── index.html              # Compiled from Pug templates
 ├── style.css              # Compiled from SCSS
@@ -341,7 +341,7 @@ npm start -- --port 3000
 
 Optionally include the scope (in which part this commit changes). Also start your commit message with lowercase letter.
 
-```
+```txt
 <type>(<scope>): <subject>
 
 <body>
@@ -351,7 +351,7 @@ Optionally include the scope (in which part this commit changes). Also start you
 
 Example:
 
-```
+```txt
 feat(canvas): add zoom feature
 
 Implement mouse wheel zoom functionality for canvas.
