@@ -13,8 +13,20 @@ head
   script(src="/libraries/jquery/jquery-ui.min.js")
   link(rel="stylesheet", href="/libraries/jquery/jquery-ui.min.css")
 
+  // tex2max should be here before MathPackage at the head
+  script(src='/libraries/tex2max.js')
+
   script.
     window.disableNativeKeypad = /(android|iphone|ipad)/i.test(window.navigator.userAgent);
+    window.tex2max = tex2max;
 
   script(src="/libraries/mathquill-0.10.1/mathquill.js")
   link(rel="stylesheet", href="/libraries/mathquill-0.10.1/mathquill.css")
+
+  link(rel="stylesheet", href="/libraries/SUI.css")
+  script(src="/libraries/SUI.js", defer)
+
+  link(rel="stylesheet", href="./styles/style.scss")
+
+  // <<main entry point>>
+  script(type="module" src="./src/index.js")

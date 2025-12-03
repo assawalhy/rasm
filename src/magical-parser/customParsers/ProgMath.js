@@ -120,7 +120,7 @@ export default class ProgMathParser {
     str = str.replace(/^\s*(.*)\s*$/, '$1');
 
     /// if number
-    if (!Number.isNaN(str)) {
+    if (!isNaN(str)) {
       snode = new Node('number', [], { value: Number.parseFloat(str) });
     }
 
@@ -202,7 +202,7 @@ export default class ProgMathParser {
         const a = arg;
         const b = 'prefixOperator';
         const c = prefix;
-        if (!Number.isNaN(a)) {
+        if (!isNaN(a)) {
           /// number
           const name = getRandomName();
           const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -260,7 +260,7 @@ export default class ProgMathParser {
           const a = prevArg;
           const b = 'suffixOperator';
           const c = suffix;
-          if (!Number.isNaN(a)) {
+          if (!isNaN(a)) {
             /// number
             const name = getRandomName();
             const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -296,7 +296,7 @@ export default class ProgMathParser {
           const a = arg;
           const b = 'prefixOperator';
           const c = prefix;
-          if (!Number.isNaN(a)) {
+          if (!isNaN(a)) {
             /// number
             const name = getRandomName();
             const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -347,7 +347,7 @@ export default class ProgMathParser {
         const a = prevArg.name;
         const b = 'suffixOperator';
         const c = suffix;
-        if (!Number.isNaN(a)) {
+        if (!isNaN(a)) {
           /// number
           const name = getRandomName();
           const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -400,7 +400,7 @@ export default class ProgMathParser {
               //#region argument for the operator
               let arg1;
               let arg2;
-              if (!Number.isNaN(g1)) {
+              if (!isNaN(g1)) {
                 /// number
                 arg1 = new Node('number', [], { value: Number.parseInt(g1) });
               } else {
@@ -415,7 +415,7 @@ export default class ProgMathParser {
                   arg1 = new Node('variable', [], { name: g1 });
                 }
               }
-              if (!Number.isNaN(g2)) {
+              if (!isNaN(g2)) {
                 /// number
                 arg2 = new Node('number', [], { value: Number.parseInt(g2) });
               } else {

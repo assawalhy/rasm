@@ -351,7 +351,7 @@ export default class OperatorsParser {
         const a = arg;
         const b = 'prefixOperator';
         const c = prefix;
-        if (!Number.isNaN(a)) {
+        if (!isNaN(a)) {
           /// number
           const name = getRandomName();
           const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -409,7 +409,7 @@ export default class OperatorsParser {
               const a = prevArg.name;
               const b = 'suffixOperator';
               const c = suffix;
-              if (!Number.isNaN(a)) {
+              if (!isNaN(a)) {
                 /// number
                 const name = getRandomName();
                 const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -447,7 +447,7 @@ export default class OperatorsParser {
           const a = arg;
           const b = 'prefixOperator';
           const c = prefix;
-          if (!Number.isNaN(a)) {
+          if (!isNaN(a)) {
             /// number
             const name = getRandomName();
             const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });
@@ -496,7 +496,7 @@ export default class OperatorsParser {
         const a = prevArg.name;
         const b = 'suffixOperator';
         const c = suffix;
-        if (!Number.isNaN(a)) {
+        if (!isNaN(a)) {
           /// number
           const name = getRandomName();
           const sn = new Node(b, new Node('number', [], { value: Number.parseInt(a) }), { name: c });

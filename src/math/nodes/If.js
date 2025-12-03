@@ -11,7 +11,7 @@ class If extends Node {
 
   calculate(cs, tempVars) {
     const condition = this.children[0].calculate(cs, tempVars);
-    if (Number.isNaN(condition)) return Number.NaN;
+    if (isNaN(condition)) return Number.NaN;
     if (condition === 1) {
       return this.children[1].calculate(cs, tempVars);
     }

@@ -9,7 +9,7 @@ class Nand extends Bool {
   calculate(cs, tempVars) {
     const num1 = this.children[0].calculate(cs, tempVars);
     const num2 = this.children[1].calculate(cs, tempVars);
-    if (Number.isNaN(num1) || Number.isNaN(num2)) {
+    if (isNaN(num1) || isNaN(num2)) {
       return Number.NaN;
     }
     if (!(num1 === 1 && num2 === 1)) return 1;

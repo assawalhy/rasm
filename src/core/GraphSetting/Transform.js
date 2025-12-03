@@ -120,7 +120,7 @@ export default class {
    * @param {*} type, is 'deg' or 'rad'
    */
   rotate(a, type = 'rad') {
-    if (!Number.isNaN(a)) {
+    if (!isNaN(a)) {
       if (type === 'deg') {
         a = (a / 180) * Math.PI;
       }
@@ -137,7 +137,7 @@ export default class {
    * @param {*} type, is 'deg' or 'rad'
    */
   rotateX(a, type = 'rad') {
-    if (!Number.isNaN(a)) {
+    if (!isNaN(a)) {
       if (type === 'deg') {
         a = (a / 180) * Math.PI;
       }
@@ -153,7 +153,7 @@ export default class {
    * @param {*} type, is 'deg' or 'rad'
    */
   rotateY(a, type = 'rad') {
-    if (!Number.isNaN(a)) {
+    if (!isNaN(a)) {
       this.invokeOnchange = false;
       if (type === 'deg') {
         a = (a / 180) * Math.PI;
@@ -284,9 +284,9 @@ export default class {
     if (
       this.ySpace <= 0 ||
       this.xSpace <= 0 ||
-      Number.isNaN(this.xSpace) ||
+      isNaN(this.xSpace) ||
       !Number.isFinite(this.xSpace) ||
-      Number.isNaN(this.ySpace) ||
+      isNaN(this.ySpace) ||
       !Number.isFinite(this.ySpace)
     ) {
       this.xSpace = xs;

@@ -2,7 +2,7 @@ import * as Errors from './errors.js';
 
 export function regSpecialChars(str) {
   return str.replace(/[+*/.$^(){|}[\]]/g, (match) => {
-    return '\\' + match;
+    return `\\${match}`;
   });
 }
 
@@ -15,14 +15,14 @@ export function getGroupsNumInReg(reg) {
   /// reg .source == reg.toString().slice(1, ((reg) => { let num = reg.length - 1; while (reg[num] !== '/') num--; return num; })(reg.toString()))
   let regStr = reg instanceof RegExp ? reg.source : reg;
 
-  if (regStr == '') return 0;
+  if (regStr === '') return 0;
 
   regStr = regStr
     .replace(/\\./g, '')
     // .replace(/\\\(|\\\)/, '')
     .replace(/^([^(])+/, '');
 
-  if (regStr == '') return 0;
+  if (regStr === '') return 0;
 
   /// regStr[0] === '(' should be (
 
@@ -33,12 +33,12 @@ export function getGroupsNumInReg(reg) {
   if (regStr.indexOf('(') > -1) {
     let num = 1;
     for (let i = 1; i < regStr.length; i++) {
-      if (regStr[i] == ')') {
+      if (regStr[i] === ')') {
         num--;
-      } else if (regStr[i] == '(') {
+      } else if (regStr[i] === '(') {
         num++;
       }
-      if (num == 0) {
+      if (num === 0) {
         // the group is closed
         const content = regStr.slice(1, i);
         if (regStr.slice(1, 3) !== '?:') groupsNum++;
@@ -53,14 +53,14 @@ export function getGroupsNumInReg(reg) {
   return groupsNum || 0;
 }
 
-export var specialRegex = {
+export const specialRegex = {
   regSpecialChars: /[+*/.$^(){}[\]]/,
   num: /(-?\d+\.?\d*)|(-?\d*\.?\d+)/,
   id: /[a-zA-Z_]+\d*/,
   // var: // var is removed as you should care about other letters in other langs that I don't know how to check for using regex
 };
 
-export var checker = {
+export const checker = {
   symbols: '!"\'#$%&()*+,-./:;<=>?@[\\]^_`{|}~€‚„…†‡ˆ‰‹‘’“”•–—˜™›¡¢£¤¥¦§¨©«¬®¯°±²³´¶·¸¹º»¼½¾¿×÷',
 
   isSymbol: (c) =>
@@ -83,7 +83,7 @@ export var checker = {
 
   isVarName: function (str) {
     let isvarname = true;
-    str.replace(/^\s*(.*)\d*\s*$/, (Math, g1) => {
+    str.replace(/^\s*(.*)\d*\s*$/, (match, g1) => {
       for (const c of g1) {
         isvarname = this.isAlpha(c) || c === '_';
         if (!isvarname) continue;
@@ -102,10 +102,9 @@ export var checker = {
       default:
         if (test instanceof RegExp) {
           return test.test(str);
-        } else {
-          console.log(`checking test "${test}" is not supported.`);
-          return true;
         }
+        console.log(`checking test "${test}" is not supported.`);
+        return true;
     }
   },
 };
@@ -113,9 +112,9 @@ export var checker = {
 export function sendError(type, msg, str = '', pos = undefined) {
   // (new Array(pos)).fill('_')     is the same as     '_'.repeat(pos)
   str = str || '';
-  str = str === '' ? '' : '\n' + str + '\n';
+  str = str === '' ? '' : `\n${str}\n`;
   if (!isNaN(pos)) {
-    pos = new Array(pos).fill('_').join('') + '^';
+    pos = `${new Array(pos).fill('_').join('')}^`;
   } else if (pos) {
     // here the text in parsing process is multi line.
     pos = `position: ${pos}`;
@@ -154,6 +153,6 @@ export function getRandomName() {
 getRandomName.randomNameNum = 0;
 getRandomName.operationBlockChar = '¶';
 
-export var operationBlockChar = '¶';
+export const operationBlockChar = '¶';
 
-export var specialChars = [operationBlockChar];
+export const specialChars = [operationBlockChar];

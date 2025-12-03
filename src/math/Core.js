@@ -2,7 +2,7 @@
 // #region checking, bool, is_
 
 export function isNumeric(value) {
-  return !Number.isNaN(value);
+  return !isNaN(value);
   // return value.toString().replace(/^\s*(\-?\d+|\-?\d+\.\d*|\-?\d*\.\d+)\s*$/, '123') === '123';
 }
 

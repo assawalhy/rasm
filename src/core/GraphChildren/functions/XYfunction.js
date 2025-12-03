@@ -1,4 +1,4 @@
-import drawing from '../../drawing/index.js';
+import { colorPackage, Pen } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 /****************************************************************/
 /****************************************************************/
@@ -22,10 +22,10 @@ export default class XYfunction extends GraphChild {
 
     if (!options.pen) {
       const c = options.sketch.coor.coorSettings.background.isDark()
-        ? drawing.colorPackage.randomLightColor()
-        : drawing.colorPackage.randomDarkColor();
+        ? colorPackage.randomLightColor()
+        : colorPackage.randomDarkColor();
       c.a = 155;
-      options.pen = new drawing.pen(c, 2);
+      options.pen = new Pen(c, 2);
     }
     //#endregion
 
@@ -54,8 +54,8 @@ export default class XYfunction extends GraphChild {
           midP = this.gs.coorTOpx(x - this.gs.drawingStep / 2, this.expression(x - this.gs.drawingStep / 2));
           // if valid add new point, unless add the array of point if has more than point
           const valid =
-            !Number.isNaN(p.x) &&
-            !Number.isNaN(p.y) &&
+            !isNaN(p.x) &&
+            !isNaN(p.y) &&
             Math.abs(p.x) < 100000 &&
             Math.abs(p.y) < 100000 &&
             ((continous &&

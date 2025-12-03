@@ -54,7 +54,7 @@ SUI.TempMessege = (options = {}) => {
       div.style.display = 'none';
       const parentStyle = getComputedStyle(options.parent);
       let zIndex = parentStyle.zIndex;
-      zIndex = !Number.isNaN(zIndex) ? Math.max(parentStyle.zIndex + 2, 2000) : 2000;
+      zIndex = !isNaN(zIndex) ? Math.max(parentStyle.zIndex + 2, 2000) : 2000;
       div.style.zIndex = zIndex; // +1 for layer if exists +2 for messege
       options.zIndex = div.style.zIndex;
       return div;

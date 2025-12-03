@@ -5,8 +5,9 @@ import * as Lines from './Lines.js';
 import Node from './Node.js';
 import Parser from './Parser.js';
 import Vector from './Vector.js';
+import { CustomParsers } from "~/magical-parser";
 
-const magicalMathParser = new MagicalParser.CustomParsers.Math();
+const magicalMathParser = new CustomParsers.Math();
 const parser = new Parser(magicalMathParser);
 
 export { Nodes, Core, Angles, Lines, magicalMathParser, parser, Parser, Vector, Node };

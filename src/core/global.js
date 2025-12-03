@@ -1,5 +1,5 @@
-import MagicalParser from '../../magical-parser/MagicalParser.js';
-import { parser } from '../../math';
+import { Node } from '../magical-parser';
+import { parser } from '../math/index.js';
 
 import { UndefError } from './Errors/index.js';
 export function generateName() {
@@ -102,7 +102,7 @@ Object.assign(Math, vars);
 
 export function getJSfunction(input, params, usestrict = true, undefThrowError = true) {
   let result;
-  if (input instanceof MagicalParser.Node) {
+  if (input instanceof Node) {
     result = parser.parsedTOjsFunction(input, params, 'Math', usestrict);
   } else if ((typeof input).toLowerCase() === 'object') {
     result = parser.maximaTOjsFunction(

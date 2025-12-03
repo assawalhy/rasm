@@ -17,7 +17,7 @@ export default class Repeat extends Rule {
     };
     this.index = groubIndex.num;
 
-    const timesTOrepeat = !Number.isNaN(this.length) ? `{${this.length}}` : '+';
+    const timesTOrepeat = !isNaN(this.length) ? `{${this.length}}` : '+';
 
     const content = this.childrenRules[0].getRegex(groubIndex.increase());
     this.repeatedRegex = new RegExp(content, 'g');

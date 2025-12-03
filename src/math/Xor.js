@@ -9,7 +9,7 @@ class Xor extends Bool {
   calculate(cs, tempVars) {
     const num1 = this.children[0].calculate(cs, tempVars);
     const num2 = this.children[1].calculate(cs, tempVars);
-    if (Number.isNaN(num1) || Number.isNaN(num2)) {
+    if (isNaN(num1) || isNaN(num2)) {
       return Number.NaN;
     }
     // here if one of the two conditions only instanceof true, 0 and 1  ,   1 and 0

@@ -12,7 +12,7 @@ export default class {
     this.coorManager = new CoorManager();
     this.transform = new Transform(this);
 
-    this.center = new vector(this.width / 2, this.height / 2);
+    this.center = new Vector(this.width / 2, this.height / 2);
 
     this.physicsRun = false;
   }
@@ -53,7 +53,7 @@ export default class {
   }
 
   centrate() {
-    this.transform.center = new vector(this.width / 2, this.height / 2);
+    this.transform.center = new Vector(this.width / 2, this.height / 2);
   }
 
   reset() {

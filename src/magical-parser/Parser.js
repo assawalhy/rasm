@@ -136,8 +136,8 @@ export default class Parser {
             // I wish all the code to be wrapped around by an awesome algorithms and special states
          } */
 
-      str.replace(this.regex, () => {
-        groups = arguments;
+      str.replace(this.regex, (...args) => {
+        groups = args;
       });
       if (!groups) throw new Error("your code doesn't match");
       // groups = [...groups];

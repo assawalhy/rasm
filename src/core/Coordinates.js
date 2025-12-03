@@ -1,4 +1,4 @@
-import drawing from './drawing/index.js';
+import { Color, Pen } from './drawing/index.js';
 import { Vector } from "~/math";
 
 export default class {
@@ -10,7 +10,7 @@ export default class {
       xUnit: '',
       yUnit: '',
 
-      background: new drawing.color(255, 255, 255, 255),
+      background: new Color(255, 255, 255, 255),
       font: 'Georgia',
 
       drawDecimalLines: true,
@@ -37,46 +37,46 @@ export default class {
 
     Object.assign(defaultCoorSettings, {
       color: defaultCoorSettings.background.isDark()
-        ? new drawing.color(200, 200, 200, 255)
-        : new drawing.color(50, 50, 50, 1),
+        ? new Color(200, 200, 200, 255)
+        : new Color(50, 50, 50, 1),
       antiBackground: defaultCoorSettings.background.isDark()
-        ? new drawing.color(200, 200, 200, 255)
-        : new drawing.color(50, 50, 50, 1),
+        ? new Color(200, 200, 200, 255)
+        : new Color(50, 50, 50, 1),
       drawDecimalLines: !defaultCoorSettings.background.isDark(),
-      penDecimalLines: new drawing.pen(
+      penDecimalLines: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(200, 200, 200, 30 / 255)
-          : new drawing.color(50, 50, 50, 30 / 255),
+          ? new Color(200, 200, 200, 30 / 255)
+          : new Color(50, 50, 50, 30 / 255),
         1,
       ),
-      penMainLines: new drawing.pen(
+      penMainLines: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(200, 200, 200, 100 / 255)
-          : new drawing.color(50, 50, 50, 100 / 255),
+          ? new Color(200, 200, 200, 100 / 255)
+          : new Color(50, 50, 50, 100 / 255),
         1,
       ),
-      penXaxis: new drawing.pen(
+      penXaxis: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(255, 255, 255, 150 / 255)
-          : new drawing.color(0, 0, 0, 150 / 255),
+          ? new Color(255, 255, 255, 150 / 255)
+          : new Color(0, 0, 0, 150 / 255),
         2,
       ),
-      penYaxis: new drawing.pen(
+      penYaxis: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(255, 255, 255, 150 / 255)
-          : new drawing.color(0, 0, 0, 150 / 255),
+          ? new Color(255, 255, 255, 150 / 255)
+          : new Color(0, 0, 0, 150 / 255),
         2,
       ),
-      penPolarCircles: new drawing.pen(
+      penPolarCircles: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(200, 200, 200, 100 / 255)
-          : new drawing.color(50, 50, 50, 50 / 255),
+          ? new Color(200, 200, 200, 100 / 255)
+          : new Color(50, 50, 50, 50 / 255),
         1,
       ),
-      penPolarLines: new drawing.pen(
+      penPolarLines: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new drawing.color(200, 200, 200, 100 / 255)
-          : new drawing.color(50, 50, 50, 50 / 255),
+          ? new Color(200, 200, 200, 100 / 255)
+          : new Color(50, 50, 50, 50 / 255),
         1,
       ),
     });
@@ -257,14 +257,14 @@ export default class {
 
   /**
    *
-   * @param {vector} pos the real position for the label on either of the two axes
+   * @param {Vector} pos the real position for the label on either of the two axes
    * @param {string} number as string to measure its size.
    * @param {string} dimension which is either 'h' or 'v', so the code will check if the label is out side the horizental view 'h', or the vertical view 'v';
    */
   __getLabelPos(canvas, pos, number, dimension, unitVec) {
     const size = canvas.measureString(number);
     size.height = 10; // as there is no properity called height in size, gotten from measureString("string");
-    pos = new vector(pos.x + 4, pos.y + 4);
+    pos = new Vector(pos.x + 4, pos.y + 4);
 
     if (dimension === 'h') {
       const bounds = [10, this.gs.width - size.width - 10];

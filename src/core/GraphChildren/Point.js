@@ -1,9 +1,12 @@
 import { getJSfunction } from '../global.js';
+import { Color, Pen } from "../drawing";
 import GraphChild from './GraphChild.js';
+
+
 export default class Point extends GraphChild {
   constructor(options) {
     //#region
-    options.pen = options.pen || new drawing.pen(new drawing.color(0, 0, 255), 10);
+    options.pen = options.pen || new Pen(new Color(0, 0, 255), 10);
     let propName;
 
     propName = 'x';

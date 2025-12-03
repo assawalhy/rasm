@@ -452,7 +452,7 @@ export default class CustomMathParser {
     str = str.replace(/^\s*(.*)\s*$/, '$1');
 
     /// if number
-    if (!Number.isNaN(str)) {
+    if (!isNaN(str)) {
       snode = new Node('number', [], {
         value: Number.parseFloat(str),
         match: str,

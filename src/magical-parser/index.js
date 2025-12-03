@@ -6,6 +6,5 @@ import Tokens from './tokens/index.js';
 import Rules from './rules/index.js';
 import Node from './Node.js';
 
-const MagicalParser = { Node, Parser, OperatorsParser, CustomParsers, TOKENS, Tokens, Rules };
 
-export default MagicalParser;
+export { Node, Parser, OperatorsParser, CustomParsers, TOKENS, Tokens, Rules };

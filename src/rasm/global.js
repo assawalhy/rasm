@@ -100,7 +100,7 @@ export function resize(setContainment = true) {
 
   const vp = sketch.gs.viewport;
   sketch.gs.transform.onchange(true);
-  // if (angles.minAngle(new vector(1, 0), vector.fromAngle(sketch.gs.transform.xAngle)).toFixed(3) === (0).toFixed(3) && angles.minAngle(new vector(1, 0), vector.fromAngle(sketch.gs.transform.yAngle)).toFixed(3) === (Math.PI / 2).toFixed(3)) {
+  // if (angles.minAngle(new Vector(1, 0), Vector.fromAngle(sketch.gs.transform.xAngle)).toFixed(3) === (0).toFixed(3) && angles.minAngle(new Vector(1, 0), Vector.fromAngle(sketch.gs.transform.yAngle)).toFixed(3) === (Math.PI / 2).toFixed(3)) {
   sketch.gs.transform.transformOrigin = undefined;
   sketch.gs.transform.setViewport(vp, true);
   sketch.gs.transform.invokeOnchange = true;

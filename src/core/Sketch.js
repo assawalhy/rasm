@@ -2,6 +2,8 @@ import Canvas from './Canvas.js';
 import Coordinates from './Coordinates.js';
 import { Empty, EvalExpr, Func, Point, Slider, Variable, Xfunction } from './GraphChildren/index.js';
 import GraphSettings from './GraphSetting/GraphSettings.js';
+import { CustomParsers } from '~/magical-parser';
+
 export default class Sketch {
   constructor(canvas, childrenCanvas) {
     this.canvas = new Canvas({ canvas });
@@ -10,7 +12,7 @@ export default class Sketch {
     this.coor = new Coordinates(this.gs);
     this.children = new Map();
     this.childrenCanvas.ctx.miterLimit = 1;
-    this.scriptParser = new MagicalParser.CustomParsers.Math();
+    this.scriptParser = new CustomParsers.Math();
   }
 
   childFromScript = (script, propsTOset = {}) => {

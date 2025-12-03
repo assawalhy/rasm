@@ -1,3 +1,5 @@
+import Angles from "./Angles.js";
+
 class Vector {
   constructor(x, y) {
     this.x = x;
@@ -18,14 +20,14 @@ class Vector {
 
   /**
    * your parameter v is either vector or number.
-   * @param {vector} v
+   * @param {Vector} v
    * @param {number} v
    */
   add(v) {
     if (v instanceof Vector) {
       return new Vector(this.x + v.x, this.y + v.y);
     }
-    if (!Number.isNaN(v)) {
+    if (!isNaN(v)) {
       return new Vector(this.x + v, this.y + v);
     }
 
@@ -34,14 +36,14 @@ class Vector {
 
   /**
    * your parameter v is either vector or number.
-   * @param {vector} v
+   * @param {Vector} v
    * @param {number} v
    */
   subtract(v) {
     if (v instanceof Vector || v instanceof Object) {
       return new Vector(this.x - v.x, this.y - v.y);
     }
-    if (!Number.isNaN(v)) {
+    if (!isNaN(v)) {
       return new Vector(this.x - v, this.y - v);
     }
 
@@ -53,7 +55,7 @@ class Vector {
    * @param {number} v
    */
   mult(v) {
-    if (!Number.isNaN(v)) {
+    if (!isNaN(v)) {
       return new Vector(this.x * v, this.y * v);
     }
 
@@ -61,7 +63,7 @@ class Vector {
   }
 
   /**
-   * @param {vector} v
+   * @param {Vector} v
    */
   dot(v) {
     if (v instanceof Vector) {

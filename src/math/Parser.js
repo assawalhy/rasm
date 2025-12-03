@@ -1,3 +1,5 @@
+import { Node } from "~/magical-parser";
+
 class Parser {
   constructor(mathParserLib) {
     this.mathParserLib = mathParserLib;
@@ -280,7 +282,7 @@ class Parser {
 
   /**
    *
-   * @param {MagicalParser.Node} parsed
+   * @param {Node} parsed
    * @param {Array} params
    * @param {String} math is the math object containing the functions and the variables that is not a parameter.
    * @param {Boolean} strict

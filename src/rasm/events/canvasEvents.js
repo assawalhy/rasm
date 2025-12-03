@@ -1,15 +1,14 @@
-import drawing from '../../core/drawing/index.js';
+import { Color } from '../../core/drawing/index.js';
 import { mouse, subTools } from '../global.js';
 import sketch from '../sketch.js';
 
-import { Vector, Angles, Core } from "~/math";
+import { Vector, Angles, Core, Lines } from "~/math";
 
 export default function canvasEvents() {
   const canvas = sketch.canvas;
   const canvasParent = canvas.parent;
 
   let mousepressed;
-  const lines = Lines;
   let dragInterval;
 
   const startTransFunc = (e) => {
@@ -49,12 +48,12 @@ export default function canvasEvents() {
     } else if (subTools.type.search('axises') > -1) {
       // canvasParent.style.cursor = 'grabbing';
       // canvasParent.style.cursor = '-webkit-grabbing';
-      const xEq = lines.lineEquation(-sketch.gs.transform.xAngle, sketch.gs.center);
-      const yEq = lines.lineEquation(-sketch.gs.transform.yAngle, sketch.gs.center);
+      const xEq = Lines.lineEquation(-sketch.gs.transform.xAngle, sketch.gs.center);
+      const yEq = Lines.lineEquation(-sketch.gs.transform.yAngle, sketch.gs.center);
       const d = 30;
       const distTo = {
-        x: lines.distToLine(subTools.mouse, xEq),
-        y: lines.distToLine(subTools.mouse, yEq),
+        x: Lines.distToLine(subTools.mouse, xEq),
+        y: Lines.distToLine(subTools.mouse, yEq),
       };
       if (distTo.x < d && distTo.y < d) {
         subTools.axis = 'xy';
@@ -63,10 +62,10 @@ export default function canvasEvents() {
         subTools.xAngle = sketch.gs.transform.xAngle;
         subTools.yAngle = sketch.gs.transform.yAngle;
         subTools.transformOrigin = new Vector(sketch.gs.center.x, sketch.gs.center.y);
-        subTools.xPenColor = Object.assign(new drawing.color(), sketch.coor.coorSettings.penXaxis.color);
-        subTools.yPenColor = Object.assign(new drawing.color(), sketch.coor.coorSettings.penYaxis.color);
-        sketch.coor.coorSettings.penXaxis.color = new drawing.color(255, 0, 0, 155);
-        sketch.coor.coorSettings.penYaxis.color = new drawing.color(255, 0, 0, 155);
+        subTools.xPenColor = Object.assign(new Color(), sketch.coor.coorSettings.penXaxis.color);
+        subTools.yPenColor = Object.assign(new Color(), sketch.coor.coorSettings.penYaxis.color);
+        sketch.coor.coorSettings.penXaxis.color = new Color(255, 0, 0, 155);
+        sketch.coor.coorSettings.penYaxis.color = new Color(255, 0, 0, 155);
       } else if (distTo.x < d) {
         subTools.axis = 'x';
         subTools.space = sketch.gs.transform.xSapce;
@@ -80,7 +79,7 @@ export default function canvasEvents() {
         }
         subTools.transformOrigin = o;
         subTools.penColor = [sketch.coor.coorSettings.penXaxis.color].slice()[0];
-        sketch.coor.coorSettings.penXaxis.color = new drawing.color(255, 0, 0, 155);
+        sketch.coor.coorSettings.penXaxis.color = new Color(255, 0, 0, 155);
       } else if (distTo.y < d) {
         subTools.axis = 'y';
         subTools.space = sketch.gs.transform.ySapce;
@@ -94,7 +93,7 @@ export default function canvasEvents() {
         }
         subTools.transformOrigin = o;
         subTools.penColor = [sketch.coor.coorSettings.penYaxis.color].slice()[0];
-        sketch.coor.coorSettings.penYaxis.color = new drawing.color(255, 0, 0, 155);
+        sketch.coor.coorSettings.penYaxis.color = new Color(255, 0, 0, 155);
       } else {
         subTools.axis = undefined;
       }
@@ -133,19 +132,19 @@ export default function canvasEvents() {
 
       switch (subTools.type) {
         case 'move': {
-          moveCoor(e);
+          moveCoor();
           break;
         }
         case 'scale-axises': {
-          scaleAxises(e);
+          scaleAxises();
           break;
         }
         case 'rotate-axises': {
-          rotateAxises(e);
+          rotateAxises();
           break;
         }
         case 'zoom': {
-          zoomBox(e);
+          zoomBox(e.shiftKey);
           break;
         }
       }
@@ -245,24 +244,24 @@ export default function canvasEvents() {
 
   //#region mouse move (tools'-subtools') functions
 
-  function moveCoor(e) {
+  function moveCoor() {
     sketch.gs.transform.translate(new Vector(mouse.x, mouse.y).subtract(subTools.mouse));
     sketch.update();
     // canvas.ellipse(mouse.x, mouse.y, 5);
     subTools.mouse = new Vector(mouse.x, mouse.y);
   }
 
-  function scaleAxises(e) {
+  function scaleAxises() {
     if (subTools.axis === 'x') {
       const rotatedMouse = subTools.mouse;
-      const xEq = lines.lineEquation(-sketch.gs.transform.xAngle, sketch.gs.center);
+      const xEq = Lines.lineEquation(-sketch.gs.transform.xAngle, sketch.gs.center);
       const incre =
         (Core.dist(mouse.x, mouse.y, rotatedMouse.x, rotatedMouse.y) ** 2 -
-          lines.distToLine(new Vector(mouse.x, mouse.y), xEq) ** 2) **
+          Lines.distToLine(new Vector(mouse.x, mouse.y), xEq) ** 2) **
         0.5;
 
       sketch.gs.transform.transformOrigin = undefined;
-      if (!Number.isNaN(incre)) {
+      if (!isNaN(incre)) {
         const mina = Angles.minAngle(
           Vector.fromAngle(-sketch.gs.transform.xAngle),
           new Vector(mouse.x, mouse.y).subtract(rotatedMouse),
@@ -283,14 +282,14 @@ export default function canvasEvents() {
       showTransDetails([`*${(sketch.gs.iVector.mag / subTools.iVector.mag).toFixed(2)}`]);
     } else if (subTools.axis === 'y') {
       const rotatedMouse = subTools.mouse;
-      const yEq = lines.lineEquation(-sketch.gs.transform.yAngle, sketch.gs.center);
+      const yEq = Lines.lineEquation(-sketch.gs.transform.yAngle, sketch.gs.center);
       const incre =
         (Core.dist(mouse.x, mouse.y, rotatedMouse.x, rotatedMouse.y) ** 2 -
-          lines.distToLine(new Vector(mouse.x, mouse.y), yEq) ** 2) **
+          Lines.distToLine(new Vector(mouse.x, mouse.y), yEq) ** 2) **
         0.5;
 
       sketch.gs.transform.transformOrigin = undefined;
-      if (!Number.isNaN(incre)) {
+      if (!isNaN(incre)) {
         const mina = Angles.minAngle(
           Vector.fromAngle(-sketch.gs.transform.yAngle),
           new Vector(mouse.x, mouse.y).subtract(rotatedMouse),
@@ -309,19 +308,19 @@ export default function canvasEvents() {
       // canvas.ellipse(mouse.x, mouse.y, 5);
       showTransDetails([`*${(sketch.gs.jVector.mag / subTools.jVector.mag).toFixed(2)}`]);
     } else if (subTools.axis === 'xy') {
-      const midEq = lines.lineEquation(
+      const midEq = Lines.lineEquation(
         -(sketch.gs.transform.yAngle + sketch.gs.transform.xAngle) / 2,
         sketch.gs.center,
       );
-      const rotatedMouse = lines.projectionToLine(subTools.mouse, midEq); // rotatedMouse here is the modified start point which sets on the line between x and y axises
+      const rotatedMouse = Lines.projectionToLine(subTools.mouse, midEq); // rotatedMouse here is the modified start point which sets on the line between x and y axises
 
       const incre =
         (Core.dist(mouse.x, mouse.y, rotatedMouse.x, rotatedMouse.y) ** 2 -
-          lines.distToLine(new Vector(mouse.x, mouse.y), midEq) ** 2) **
+          Lines.distToLine(new Vector(mouse.x, mouse.y), midEq) ** 2) **
         0.5; // pathagorean's method
 
       sketch.gs.transform.transformOrigin = undefined;
-      if (!Number.isNaN(incre)) {
+      if (!isNaN(incre)) {
         const mina = Angles.minAngle(
           Vector.fromAngle(-sketch.gs.transform.yAngle),
           new Vector(mouse.x, mouse.y).subtract(rotatedMouse),
@@ -346,7 +345,7 @@ export default function canvasEvents() {
     }
   }
 
-  function rotateAxises(e) {
+  function rotateAxises() {
     if (subTools.axis === 'x') {
       if (Core.dist(sketch.gs.center.x, sketch.gs.center.y, mouse.x, mouse.y) > 10) {
         let rotatedMouse = subTools.mouse;
@@ -355,7 +354,7 @@ export default function canvasEvents() {
           new Vector(mouse.x, mouse.y).subtract(new Vector(sketch.gs.center.x, sketch.gs.center.y)),
         );
         rotationAngle = Angles.constrainAngle(rotationAngle);
-        if (!Number.isNaN(rotationAngle)) {
+        if (!isNaN(rotationAngle)) {
           // sketch.gs.transform.xAngle = snapAngle(subTools.angle - rotationAngle);
           sketch.gs.transform.xAngle = Angles.snapAngle(subTools.angle - rotationAngle, [0, Math.PI]);
           const center = sketch.gs.center;
@@ -382,7 +381,7 @@ export default function canvasEvents() {
           new Vector(mouse.x, mouse.y).subtract(new Vector(sketch.gs.center.x, sketch.gs.center.y)),
         );
         rotationAngle = Angles.constrainAngle(rotationAngle);
-        if (!Number.isNaN(rotationAngle)) {
+        if (!isNaN(rotationAngle)) {
           sketch.gs.transform.yAngle = Angles.snapAngle(subTools.angle - rotationAngle, [
             Math.PI / 2,
             (3 * Math.PI) / 2,
@@ -409,7 +408,7 @@ export default function canvasEvents() {
           new Vector(mouse.x, mouse.y).subtract(new Vector(sketch.gs.center.x, sketch.gs.center.y)),
         );
         rotationAngle = Angles.constrainAngle(rotationAngle);
-        if (!Number.isNaN(rotationAngle)) {
+        if (!isNaN(rotationAngle)) {
           sketch.gs.transform.xAngle = subTools.xAngle - rotationAngle;
           sketch.gs.transform.yAngle = subTools.yAngle - rotationAngle;
           const center = sketch.gs.center;
@@ -430,7 +429,7 @@ export default function canvasEvents() {
     }
   }
 
-  function zoomBox(e) {
+  function zoomBox(isShiftKey = false) {
     //#region calculating box
     let s = { xmin: subTools.mouse.x, ymin: subTools.mouse.y, xmax: mouse.x, ymax: mouse.y };
 
@@ -441,16 +440,15 @@ export default function canvasEvents() {
     subTools.pxViewport.width = subTools.pxViewport.xmax - subTools.pxViewport.xmin;
     subTools.pxViewport.height = subTools.pxViewport.ymax - subTools.pxViewport.ymin;
     s = subTools.pxViewport;
-    let slice;
     if (s.width < 10 && s.height < 10) {
       s.width = 0;
       s.height = 0;
     }
     // reserved ratios
-    if (document.querySelector('#subtools-zoom-rr').checked || e.shiftKey) {
+    if (document.querySelector('#subtools-zoom-rr').checked || isShiftKey) {
       const a = Angles.minAngle(Vector.fromAngle(0), new Vector(sketch.gs.width, sketch.gs.height));
-      const equ = lines.lineEquation(a, subTools.mouse);
-      const p = lines.projectionToLine(new Vector(mouse.x, mouse.y), equ);
+      const equ = Lines.lineEquation(a, subTools.mouse);
+      const p = Lines.projectionToLine(new Vector(mouse.x, mouse.y), equ);
       s = { xmin: subTools.mouse.x, ymin: subTools.mouse.y, xmax: Math.round(p.x), ymax: Math.round(p.y) };
       subTools.pxViewport.xmin = Math.min(s.xmin, s.xmax);
       subTools.pxViewport.ymin = Math.min(s.ymin, s.ymax);

@@ -29,7 +29,7 @@ class Sum extends Node {
     for (let i = 1; i <= Math.round((end - start) / step); i++) {
       tempvars[tempvars.length - 1].value = new Constant(start + i * step);
       valueToAdd = this.children[3].calculate(cs, tempvars);
-      if (Number.isNaN(valueToAdd)) return Number.NaN;
+      if (isNaN(valueToAdd)) return Number.NaN;
       sum += valueToAdd;
     }
 

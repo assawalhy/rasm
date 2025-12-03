@@ -8,7 +8,7 @@ class Not extends Bool {
 
   calculate(cs, tempVars) {
     const num = this.children[0].calculate(cs, tempVars);
-    if (Number.isNaN(num)) {
+    if (isNaN(num)) {
       return Number.NaN;
     }
     if (num === 0) return 1;

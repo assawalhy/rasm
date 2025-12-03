@@ -1,10 +1,11 @@
-import { ExistBefore, UndefError } from '../core/Errors/index.js';
-import { Empty, EvalExpr, Func, Point, Slider, Variable, XYfunction, Xfunction } from '../core/GraphChildren/index.js';
+import { UndefError } from '../core/Errors/index.js';
+import { Empty, EvalExpr, Func, Slider, Variable, Xfunction } from '../core/GraphChildren/index.js';
 import { getJSfunction } from '../core/global.js';
-import { addControl, genRandomName, keypadSettings, removeControl } from './global.js';
+import { addControl, keypadSettings, removeControl } from './global.js';
 import sketch from './sketch.js';
 import { slidersAutoplay } from './slidersController.js';
 import { parser, Core } from "~/math";
+import { Node } from "~/magical-parser";
 
 export default class ChildControl {
   constructor(graphChild) {
@@ -120,7 +121,7 @@ export default class ChildControl {
         try {
           const prev = this._graphChild;
           if (latex === '') {
-            this.parsedScript = new MagicalParser.Node('');
+            this.parsedScript = new Node('');
             this.graphChild = new Empty({ sketch: sketch });
           } else {
             if (latex) {
@@ -328,7 +329,7 @@ export default class ChildControl {
             counter++;
           }
           const id = this.textContent;
-          // let newChild = new ChildControl(new Func({ id, expr: new MagicalParser.Node('variable', [], { name: param }), params: [param], sketch: sketch }));
+          // let newChild = new ChildControl(new Func({ id, expr: new Node('variable', [], { name: param }), params: [param], sketch: sketch }));
           addControl(`${id}\\left(${param}\\right) = ${param}`, Number.parseInt(me.orderELT.textContent));
         });
       });
@@ -520,7 +521,7 @@ export default class ChildControl {
   __updateEvalExpr() {
     try {
       let value = this.graphChild.eval();
-      if (!Number.isNaN(value)) {
+      if (!isNaN(value)) {
         value += 0; /// +0 is here to convert the object (representing the valueOf a variable) into a number
         value = Number.parseFloat(value.toFixed(10));
         switch (this.sliderProps.valueType.getAttribute('type')) {
