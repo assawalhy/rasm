@@ -109,7 +109,7 @@ export const checker = {
   },
 };
 
-export function sendError(type, msg, str = '', pos = undefined) {
+export function throwError(type, msg, str = '', pos = undefined) {
   // (new Array(pos)).fill('_')     is the same as     '_'.repeat(pos)
   str = str || '';
   str = str === '' ? '' : `\n${str}\n`;

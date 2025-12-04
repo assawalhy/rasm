@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import { contains, getRandomName, sendError } from '../global.js';
+import { contains, getRandomName, throwError } from '../global.js';
 import block from '../tokens/Block.js';
 import { Operator, PrefixOperator, Separator, SuffixOperator } from '../tokens/Operators.js';
 
@@ -74,30 +74,27 @@ export default class ProgMathParser {
 
   set options(options) {
     options = Object.assign(this._options, options);
-    prepareOptions(options);
+    // prepareOptions(options);
   }
 
   parse(str, operations = null) {
     const options = this.options;
     operations = operations instanceof Map ? operations : new Map();
-    //#region pre codes
+
     for (let i = 0; i < options.forbiddenChars.length; i++) {
-      if (contains(str, options.forbiddenChars[i])) sendError('forbiddenSymbol', 'forbidden symbol.');
+      if (contains(str, options.forbiddenChars[i])) throwError('forbiddenSymbol', 'forbidden symbol.');
     }
-    // if empty
+
     str = str.replace(/\s+/g, () => {
       return ' ';
     });
 
-    //#endregion
     return this.__parse(str, options, operations);
   }
 
   __parse(str, options, operations, subOptions = {}) {
     let snode;
     subOptions = Object.assign({ parseBlocks: true, parseOperators: true }, subOptions); /// or use Object.assign
-
-    //#region parsing
 
     // if empty of characters
     str = str.replace(/^\s*$/, () => {
@@ -108,13 +105,10 @@ export default class ProgMathParser {
     if (subOptions.parseBlocks) {
       str = this.__parseBlocks(str, options, operations);
     }
+
     if (subOptions.parseOperators) {
       str = this.__parseOperators(str, options, operations);
     }
-
-    //#endregion
-
-    //#region the last thing in str,,, number or name or operationName
 
     // if name of operation
     str = str.replace(/^\s*(.*)\s*$/, '$1');
@@ -136,18 +130,14 @@ export default class ProgMathParser {
     });
     if (snode) return snode;
 
-    //#endregion
-
     // this shouldn't happen in ordinary cases, but this line of code is here for avoiding any flaw out of measurements
-    throw new Error(`invalid script.\n${str}`);
+    throw new Error(`unexpected error for this input: ${str}`);
   }
 
   /**
    * this modified version of __parseBlocks is much better and faster,,, we have gotten rid of if statements and varaible and alot of code that are redundant
    */
   __parseBlocks(str, options, operations) {
-    //#region brackets
-
     const blocks = options.blocks;
 
     let b;
@@ -163,8 +153,6 @@ export default class ProgMathParser {
       str = str.replace(b.regex, repBlock);
     }
 
-    //#endregion
-
     return str;
   }
 
@@ -172,7 +160,6 @@ export default class ProgMathParser {
     /// RegExp: (var or num or block)(suffix)(op)(prefix)(var or num or block)
     /// ((?:[a-zA-Z_]+\d*)|(?:-?\d+\.?\d*)|(?:-?\d*\.?\d+))\s*((?:\+\+))?\s*((?:\+))\s*((?:\+\+|\+|\-))?\s*((?:[a-zA-Z_]+\d*)|(?:\d+\.?\d*)|(?:\d*\.?\d+))
 
-    //#region separators
     for (const s of options.separators) {
       if (contains(str, s.id)) {
         const name = this.__get;
@@ -184,17 +171,12 @@ export default class ProgMathParser {
         operations.set(name, new Node('separator', args, { name: s.id, length: args.length }));
       }
     }
-    //#endregion
 
-    //#region preparing for parsing process
     let _str = '';
     let prevArg = {
       name: null,
       sn: null,
     };
-    //#endregion
-
-    //#region searching for operators and parsing suffix and prefix
 
     /// intial replacement
     str = str.replace(options.opIntialTestReg, (match, prefix, arg) => {
@@ -252,7 +234,7 @@ export default class ProgMathParser {
       /// if replacement is not implemented, str will sstill the same and while loop will close
       str = str.replace(options.opTestReg, (match, suffix, op, prefix, arg) => {
         if (!op) {
-          sendError('operators', 'invalid operators', str, null);
+          throwError('operators', 'invalid operators', str, null);
         }
 
         if (suffix) {
@@ -380,14 +362,10 @@ export default class ProgMathParser {
 
         return '';
       });
-      if (str !== '') sendError('operators', 'invalid suffix operator at the end', '', null);
+      if (str !== '') throwError('operators', 'invalid suffix operator at the end', '', null);
     } else {
       _str += prevArg.name;
     }
-
-    //#endregion
-
-    //#region parsing operators
 
     for (let i = 0; i < options.operators.length; i++) {
       end = false;
@@ -441,8 +419,6 @@ export default class ProgMathParser {
         /// if the operator is not found,,, end the while loop.
       }
     }
-
-    //#endregion
 
     return _str;
   }

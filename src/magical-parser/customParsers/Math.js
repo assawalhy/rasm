@@ -1,11 +1,11 @@
 import Node from '../Node.js';
-import { contains, getRandomName, operationBlockChar, sendError, specialChars } from '../global.js';
+import { contains, getRandomName, operationBlockChar, throwError, specialChars } from '../global.js';
 import Block from '../tokens/Block.js';
 import { Operator, PrefixOperator, Separator, SuffixOperator } from '../tokens/Operators.js';
 
-export default class CustomMathParser {
+export default class MathParser {
   constructor(options) {
-    this._options = {
+    this.options = this.prepareOptions({
       autoMultSign: true,
       vars: [], /// to be used in this case ::: ' 1 + var(2-5)' which is the same as ' 1+ var*(2-5)'
       nameTest: '[a-zA-Z_]+\\d*',
@@ -66,18 +66,9 @@ export default class CustomMathParser {
       ],
 
       forbiddenChars: [],
-    };
-    this.options = Object.assign(this._options, options || {});
-  }
 
-  //#region options
-
-  get options() {
-    return this._options;
-  }
-
-  set options(options) {
-    this._options = this.prepareOptions(options);
+      ...options
+    });
   }
 
   prepareOptions(options) {
@@ -227,7 +218,7 @@ export default class CustomMathParser {
     operations = operations instanceof Map ? operations : new Map();
     //#region pre codes
     for (let i = 0; i < options.forbiddenChars.length; i++) {
-      if (contains(str, options.forbiddenChars[i])) sendError('forbiddenSymbol', 'forbidden symbol.');
+      if (contains(str, options.forbiddenChars[i])) throwError('forbiddenSymbol', 'forbidden symbol.');
     }
     // // if empty
     // str = str.replace(/\s+/g, () => {
@@ -356,7 +347,7 @@ export default class CustomMathParser {
       /// if replacement is not implemented, str will sstill the same and while loop will close
       str = str.replace(options.opTestReg, (match, suffix, op, prefix, arg) => {
         if (!op) {
-          sendError('operators', 'invalid operators', str, null);
+          throwError('operators', 'invalid operators', str, null);
         }
 
         if (suffix) {
@@ -402,7 +393,7 @@ export default class CustomMathParser {
         _str += name;
         return '';
       });
-      if (str !== '') sendError('operators', 'invalid suffix operator at the end', '', null);
+      if (str !== '') throwError('operators', 'invalid suffix operator at the end', '', null);
     } else {
       _str += prevArg;
     }

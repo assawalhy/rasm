@@ -10,7 +10,7 @@
 
 // import sNode from './sNode';
 import Node from './Node.js';
-import { checker, contains, getRandomName, sendError } from './global.js';
+import { checker, contains, getRandomName, throwError } from './global.js';
 import { Operator, PrefixOperator, Separator, SuffixOperator } from './tokens/Operators.js';
 
 export default class OperatorsParser {
@@ -176,7 +176,7 @@ export default class OperatorsParser {
 
     // checking errors
     for (let i = 0; i < forbiddenChars.length; i++) {
-      if (contains(str, forbiddenChars[i])) sendError(`forbidden char ${forbiddenChars[i]}`);
+      if (contains(str, forbiddenChars[i])) throwError(`forbidden char ${forbiddenChars[i]}`);
     }
 
     // if empty of characters
@@ -399,7 +399,7 @@ export default class OperatorsParser {
       /// if replacement is not implemented, str will sstill the same and while loop will close
       str = str.replace(search, (match, suffix, op, prefix, arg) => {
         if (!op) {
-          sendError('operators', 'invalid operators', str, null);
+          throwError('operators', 'invalid operators', str, null);
         }
 
         if (suffix) {
@@ -529,7 +529,7 @@ export default class OperatorsParser {
 
         return '';
       });
-      if (str !== '') sendError('operators', 'invalid suffix operator at the end', '', null);
+      if (str !== '') throwError('operators', 'invalid suffix operator at the end', '', null);
     }
     //#endregion
 
