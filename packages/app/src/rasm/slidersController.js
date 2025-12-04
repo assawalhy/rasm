@@ -9,8 +9,8 @@ export const slidersAutoplay = {
    * @param {ChildControl} sliderControl
    */
   push: function (sliderControl) {
-    const slider = sliderControl.sliderProps.slider;
-    const attrs = sliderControl.sliderProps.attrs;
+    const slider = sliderControl.renderer.elements.slider;
+    const options = sliderControl.renderer.options;
     const sliderConfig = {
       min: Number.parseFloat(slider.min),
       max: Number.parseFloat(slider.max),
@@ -23,7 +23,7 @@ export const slidersAutoplay = {
       stepsCount: Math.round((sliderConfig.max - sliderConfig.min) / sliderConfig.step),
     };
 
-    this.workingSliders.push({ sliderControl, stepConfig, sliderConfig, attrs, slider });
+    this.workingSliders.push({ sliderControl, stepConfig, sliderConfig, options, slider });
 
     if (this.status === 'all-stoped') {
       this.status = 'working';
@@ -52,15 +52,15 @@ export const slidersAutoplay = {
     // let times = 0;
     this.interval = setInterval(() => {
       // updating all working slliders
-      for (const { attrs, sliderConfig, stepConfig, slider } of this.workingSliders) {
+      for (const { options, sliderConfig, stepConfig, slider } of this.workingSliders) {
         stepConfig.current +=
-          (attrs.speed / 100) * attrs.sliderDirection * (intervalSleepDur / 1000) * stepConfig.stepsCount;
+          (options.speed / 100) * options.sliderDirection * (intervalSleepDur / 1000) * stepConfig.stepsCount;
         if (Math.abs(stepConfig.current - stepConfig.prev) >= 1) {
           let value;
-          switch (attrs.dir) {
+          switch (options.dir) {
             case 'oscillate': {
               value = sliderConfig.min + Math.round(stepConfig.current) * sliderConfig.step;
-              if (stepConfig.current < 0 || stepConfig.current > stepConfig.stepsCount) attrs.sliderDirection *= -1;
+              if (stepConfig.current < 0 || stepConfig.current > stepConfig.stepsCount) options.sliderDirection *= -1;
               break;
             }
             case 'forwards': {
