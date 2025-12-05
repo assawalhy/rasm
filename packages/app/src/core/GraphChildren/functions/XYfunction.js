@@ -1,4 +1,4 @@
-import { colorPackage, Pen } from '../../drawing';
+import { Pen, colorPackage } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 /****************************************************************/
 /****************************************************************/

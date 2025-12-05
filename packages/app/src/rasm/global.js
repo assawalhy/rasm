@@ -1,6 +1,6 @@
+import { Core } from '@rasm/math';
 import ChildControl from './ChildControl.js';
 import sketch from './sketch.js';
-import { Core } from "@rasm/math";
 
 const canvasParent = sketch.canvas.parent;
 

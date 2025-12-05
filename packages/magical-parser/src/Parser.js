@@ -1,5 +1,5 @@
-import { operationBlockChar, regSpecialChars } from './global.js';
 import Grammer from './Grammer.js';
+import { operationBlockChar, regSpecialChars } from './global.js';
 import Rule from './rules/Rule.js';
 export default class Parser {
   constructor(grammer) {

@@ -40,7 +40,7 @@ const RendererFactory = {
     // Fallback to empty renderer for unknown types
     console.warn(`No renderer found for ${graphChild.constructor.name}, using EmptyRenderer`);
     return new EmptyRenderer(control, graphChild);
-  }
+  },
 };
 
 export default RendererFactory;

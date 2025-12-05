@@ -1,5 +1,5 @@
-import BaseRenderer from './BaseRenderer.js';
 import sketch from '../sketch.js';
+import BaseRenderer from './BaseRenderer.js';
 
 /**
  * Renderer for Xfunction graph children (plottable functions)
@@ -30,10 +30,7 @@ export default class XfunctionRenderer extends BaseRenderer {
 
   update() {
     if (this.elements.visibleElt) {
-      this.elements.visibleElt.setAttribute(
-        'style',
-        `--color: ${this.graphChild.pen.color.toString()}`
-      );
+      this.elements.visibleElt.setAttribute('style', `--color: ${this.graphChild.pen.color.toString()}`);
     }
   }
 }

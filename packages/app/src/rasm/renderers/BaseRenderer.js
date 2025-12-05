@@ -75,7 +75,7 @@ export default class BaseRenderer {
     }
 
     // Remove DOM elements
-    Object.values(this.elements).forEach(element => {
+    Object.values(this.elements).forEach((element) => {
       element?.remove?.();
     });
     this.elements = {};

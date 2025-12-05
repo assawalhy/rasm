@@ -1,10 +1,10 @@
+import { Node } from '@rasm/magical-parser';
+import { Core, parser } from '@rasm/math';
 import { UndefError } from '../core/Errors/index.js';
 import { Empty, Func, Slider, Variable } from '../core/GraphChildren/index.js';
 import { addControl, keypadSettings, removeControl } from './global.js';
-import sketch from './sketch.js';
-import { parser, Core } from "@rasm/math";
-import { Node } from "@rasm/magical-parser";
 import { RendererFactory } from './renderers/index.js';
+import sketch from './sketch.js';
 
 export default class ChildControl {
   disableUpdate = false;
@@ -191,7 +191,8 @@ export default class ChildControl {
         size--;
         if (size < 0) return;
         if (child && child !== this._graphChild && child.control.vars) {
-          if (child.control.vars.find((a) => this._graphChild.id === a || (oldGraphChild && a === oldGraphChild.id))) child.control.update();
+          if (child.control.vars.find((a) => this._graphChild.id === a || (oldGraphChild && a === oldGraphChild.id)))
+            child.control.update();
         }
       });
     }
@@ -201,7 +202,8 @@ export default class ChildControl {
         size--;
         if (size < 0) return;
         if (child && child.control !== this && child.control.vars) {
-          if (child.control.funcs.find((a) => this._graphChild.id === a || (oldGraphChild && a === oldGraphChild.id))) child.control.update();
+          if (child.control.funcs.find((a) => this._graphChild.id === a || (oldGraphChild && a === oldGraphChild.id)))
+            child.control.update();
         }
       });
     }

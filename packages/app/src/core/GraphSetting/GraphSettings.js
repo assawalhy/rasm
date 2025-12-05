@@ -1,7 +1,7 @@
+import { Vector } from '@rasm/math';
 import { ExistBefore } from '../Errors/index.js';
 import CoorManager from './CoorManager.js';
 import Transform from './Transform.js';
-import { Vector } from "@rasm/math";
 
 export default class {
   constructor(sketch, width, height) {

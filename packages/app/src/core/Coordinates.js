@@ -1,5 +1,5 @@
+import { Vector } from '@rasm/math';
 import { Color, Pen } from './drawing/index.js';
-import { Vector } from "@rasm/math";
 
 export default class {
   constructor(gs, coorSettings) {
@@ -36,17 +36,13 @@ export default class {
     };
 
     Object.assign(defaultCoorSettings, {
-      color: defaultCoorSettings.background.isDark()
-        ? new Color(200, 200, 200, 255)
-        : new Color(50, 50, 50, 1),
+      color: defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 255) : new Color(50, 50, 50, 1),
       antiBackground: defaultCoorSettings.background.isDark()
         ? new Color(200, 200, 200, 255)
         : new Color(50, 50, 50, 1),
       drawDecimalLines: !defaultCoorSettings.background.isDark(),
       penDecimalLines: new Pen(
-        defaultCoorSettings.background.isDark()
-          ? new Color(200, 200, 200, 30 / 255)
-          : new Color(50, 50, 50, 30 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 30 / 255) : new Color(50, 50, 50, 30 / 255),
         1,
       ),
       penMainLines: new Pen(
@@ -56,27 +52,19 @@ export default class {
         1,
       ),
       penXaxis: new Pen(
-        defaultCoorSettings.background.isDark()
-          ? new Color(255, 255, 255, 150 / 255)
-          : new Color(0, 0, 0, 150 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(255, 255, 255, 150 / 255) : new Color(0, 0, 0, 150 / 255),
         2,
       ),
       penYaxis: new Pen(
-        defaultCoorSettings.background.isDark()
-          ? new Color(255, 255, 255, 150 / 255)
-          : new Color(0, 0, 0, 150 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(255, 255, 255, 150 / 255) : new Color(0, 0, 0, 150 / 255),
         2,
       ),
       penPolarCircles: new Pen(
-        defaultCoorSettings.background.isDark()
-          ? new Color(200, 200, 200, 100 / 255)
-          : new Color(50, 50, 50, 50 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 100 / 255) : new Color(50, 50, 50, 50 / 255),
         1,
       ),
       penPolarLines: new Pen(
-        defaultCoorSettings.background.isDark()
-          ? new Color(200, 200, 200, 100 / 255)
-          : new Color(50, 50, 50, 50 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 100 / 255) : new Color(50, 50, 50, 50 / 255),
         1,
       ),
     });

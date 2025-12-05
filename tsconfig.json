@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "preserve",
     "target": "ES2022",
     "module": "ESNext",
     "lib": ["ES2022"],
@@ -12,12 +13,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "noEmit": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "noEmit": true
   },
-  "include": ["**/*.ts", "**/*.js", "**/*.tsx"],
-  "exclude": ["node_modules", "public", "src/js/third-party"]
+  "include": ["**/*.ts", "**/*.js", "**/*.tsx"]
 }

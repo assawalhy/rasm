@@ -1,5 +1,5 @@
 import Node from '../Node.js';
-import { contains, getRandomName, operationBlockChar, throwError, specialChars } from '../global.js';
+import { contains, getRandomName, operationBlockChar, specialChars, throwError } from '../global.js';
 import Block from '../tokens/Block.js';
 import { Operator, PrefixOperator, Separator, SuffixOperator } from '../tokens/Operators.js';
 

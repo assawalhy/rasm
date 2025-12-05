@@ -1,7 +1,7 @@
-import BaseRenderer from './BaseRenderer.js';
 import { getJSfunction } from '../../core/global.js';
-import { slidersAutoplay } from '../slidersController.js';
 import sketch from '../sketch.js';
+import { slidersAutoplay } from '../slidersController.js';
+import BaseRenderer from './BaseRenderer.js';
 
 /**
  * Renderer for Slider graph children (interactive sliders with controls)
@@ -89,47 +89,62 @@ export default class SliderRenderer extends BaseRenderer {
   setupSliderControls() {
     const slider = this.elements.slider;
 
-    // Create MathQuill fields for min/max/step
+    // Helper to safely evaluate latex and show errors
+    const createSafeHandler = (fieldName, callback) => {
+      return (mathField) => {
+        try {
+          this.pauseSlider();
+          const latex = mathField.latex();
+          const value = getJSfunction(latex)();
+
+          // Validate the value
+          if (isNaN(value) || !Number.isFinite(value)) {
+            throw new Error(`${fieldName} must be a valid number`);
+          }
+
+          // Additional validation for step
+          if (fieldName === 'step' && value <= 0) {
+            throw new Error('step must be greater than 0');
+          }
+
+          // Apply the value
+          callback(value);
+        } catch (error) {
+          // Use the control's error handler for consistent error display
+          this.control.error(error);
+        }
+      };
+    };
+
+    // Create MathQuill fields for min/max/step with error handling
     const options = {
-      min: MQ.MathField(
-        this.elements.sliderOuter.querySelector('.slider-controller .math-field.min'),
-        {
-          handlers: {
-            edit: () => {
-              this.pauseSlider();
-              slider.min = getJSfunction(options.min.latex())();
-            },
-          },
-        }
-      ),
-      max: MQ.MathField(
-        this.elements.sliderOuter.querySelector('.slider-controller .math-field.max'),
-        {
-          handlers: {
-            edit: () => {
-              this.pauseSlider();
-              slider.max = getJSfunction(options.max.latex())();
-            },
-          },
-        }
-      ),
-      step: MQ.MathField(
-        this.elements.sliderOuter.querySelector('.slider-controller .math-field.step'),
-        {
-          handlers: {
-            edit: () => {
-              this.pauseSlider();
-              slider.step = getJSfunction(options.step.latex())();
-            },
-          },
-        }
-      ),
+      min: MQ.MathField(this.elements.sliderOuter.querySelector('.slider-controller .math-field.min'), {
+        handlers: {
+          edit: createSafeHandler('min', (value) => {
+            slider.min = value;
+          }),
+        },
+      }),
+      max: MQ.MathField(this.elements.sliderOuter.querySelector('.slider-controller .math-field.max'), {
+        handlers: {
+          edit: createSafeHandler('max', (value) => {
+            slider.max = value;
+          }),
+        },
+      }),
+      step: MQ.MathField(this.elements.sliderOuter.querySelector('.slider-controller .math-field.step'), {
+        handlers: {
+          edit: createSafeHandler('step', (value) => {
+            slider.step = value;
+          }),
+        },
+      }),
       dir: 'oscillate',
       speed: 50,
       sliderDirection: 1,
     };
 
-    // Store slider properties for compatibility
+    // Store slider properties
     this.options = options;
   }
 
@@ -150,8 +165,8 @@ export default class SliderRenderer extends BaseRenderer {
       if (slider.ismousedown) {
         slider.dispatchEvent(
           new CustomEvent('onchange', {
-            handlerParams: [{ updateSliderElement: false }]
-          })
+            handlerParams: [{ updateSliderElement: false }],
+          }),
         );
       }
     };
@@ -170,8 +185,8 @@ export default class SliderRenderer extends BaseRenderer {
     const handleMouseUp = () => {
       slider.dispatchEvent(
         new CustomEvent('onchange', {
-          handlerParams: [{ updateSliderElement: false }]
-        })
+          handlerParams: [{ updateSliderElement: false }],
+        }),
       );
       slider.ismousedown = false;
     };
@@ -194,12 +209,8 @@ export default class SliderRenderer extends BaseRenderer {
     const value = this.graphChild.getValue();
 
     // Update min/max to accommodate current value
-    this.options.min.latex(
-      Math.min(Number.parseFloat(slider.min), Number.parseFloat(value))
-    );
-    this.options.max.latex(
-      Math.max(Number.parseFloat(slider.max), Number.parseFloat(value))
-    );
+    this.options.min.latex(Math.min(Number.parseFloat(slider.min), Number.parseFloat(value)));
+    this.options.max.latex(Math.max(Number.parseFloat(slider.max), Number.parseFloat(value)));
 
     // Update slider value without triggering onchange
     this.invokeOnchange = false;

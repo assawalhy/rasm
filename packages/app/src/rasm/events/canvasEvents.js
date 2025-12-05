@@ -2,7 +2,7 @@ import { Color } from '../../core/drawing/index.js';
 import { mouse, subTools } from '../global.js';
 import sketch from '../sketch.js';
 
-import { Vector, Angles, Core, Lines } from "@rasm/math";
+import { Angles, Core, Lines, Vector } from '@rasm/math';
 
 export default function canvasEvents() {
   const canvas = sketch.canvas;

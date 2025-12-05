@@ -1,8 +1,8 @@
+import { CustomParsers } from '@rasm/magical-parser';
 import Canvas from './Canvas.js';
 import Coordinates from './Coordinates.js';
 import { Empty, EvalExpr, Func, Point, Slider, Variable, Xfunction } from './GraphChildren/index.js';
 import GraphSettings from './GraphSetting/GraphSettings.js';
-import { CustomParsers } from '@rasm/magical-parser';
 
 export default class Sketch {
   constructor(canvas, childrenCanvas) {

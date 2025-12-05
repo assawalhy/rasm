@@ -1,1 +1,4 @@
 - I'm using Bun.js as a package manager and test toolchain, so to run Js scripts (i.e. .cjs) file you should use Bun to to so.
+- This is a monorepo managed by TurboRepo and the cli tool is `turbo` which can be used to start the app (using `turbo dev`) and build the packages
+- commit messages should start with lower case in imperative form without a label ("fix: " or whatever)
+  - example: "remove unused library X"

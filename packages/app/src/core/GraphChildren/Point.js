@@ -1,7 +1,6 @@
+import { Color, Pen } from '../drawing';
 import { getJSfunction } from '../global.js';
-import { Color, Pen } from "../drawing";
 import GraphChild from './GraphChild.js';
-
 
 export default class Point extends GraphChild {
   constructor(options) {

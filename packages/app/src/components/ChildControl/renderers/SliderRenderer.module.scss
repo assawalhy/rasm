@@ -1,0 +1,128 @@
+.sliderOuter {
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 4px;
+  
+  &.play {
+    background: #e3f2fd;
+  }
+}
+
+.rangeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controllerToggle {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #e0e0e0;
+  }
+  
+  i {
+    font-size: 0.875rem;
+  }
+}
+
+.slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    transition: all 0.2s;
+    
+    &:hover {
+      background: #5568d3;
+      transform: scale(1.1);
+    }
+  }
+  
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #667eea;
+    cursor: pointer;
+    border: none;
+    
+    &:hover {
+      background: #5568d3;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.playPause {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #667eea;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #5568d3;
+    transform: scale(1.05);
+  }
+  
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+.sliderController {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  
+  label {
+    min-width: 40px;
+    color: #666;
+    font-weight: 500;
+  }
+}
+
+.controlValue {
+  flex: 1;
+  padding: 0.25rem 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-family: monospace;
+}

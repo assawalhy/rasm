@@ -1,4 +1,4 @@
-import { Angles, Core, Vector } from "@rasm/math";
+import { Angles, Core, Vector } from '@rasm/math';
 
 export default class {
   constructor(gs) {

@@ -1,5 +1,5 @@
+import { Core } from '@rasm/math';
 import Canvas from '../Canvas.js';
-import { Core } from "@rasm/math";
 
 export class Pen {
   constructor(color, weight = 1, style = 'solid') {
@@ -179,9 +179,8 @@ export const colorPackage = {
       c = colorPackage.randomColor();
     } while (c.isDark());
     return c;
-  }
+  },
 };
-
 
 export function measureString(txt) {
   return canvas.elt.getContext('2d').measureText(txt);

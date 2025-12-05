@@ -1,4 +1,4 @@
-import Angles from "./Angles.js";
+import Angles from './Angles.js';
 
 class Vector {
   constructor(x, y) {

@@ -1,5 +1,6 @@
-import { Node } from "@rasm/magical-parser";
-import MathParser from "@rasm/magical-parser/customParsers/Math.js";
+import { Node } from '@rasm/magical-parser';
+import MathParser from '@rasm/magical-parser/customParsers/Math.js';
+import { tex2max } from './tex2max';
 
 const mathParser = new MathParser();
 
@@ -121,7 +122,7 @@ export function __generateJS(parsed, params = [], math = 'Math', undef = null) {
 }
 
 export function latexTOmaxima(tex) {
-  return new window.tex2max().toMaxima(tex);
+  return new tex2max().toMaxima(tex);
 }
 
 export function latexTOnode(tex) {
@@ -140,4 +141,3 @@ export function maximaTOjsFunction(str, params = [], math = 'Math', strict = tru
 }
 
 export function maximaTOlatex(str) { }
-

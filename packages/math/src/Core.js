@@ -1,4 +1,3 @@
-
 // #region checking, bool, is_
 
 export function isNumeric(value) {
@@ -167,4 +166,3 @@ export function calculateString(txt) {
   const node = stringTOnode(txt);
   return node.caluclate(CalculationSettings(), new Map());
 }
-

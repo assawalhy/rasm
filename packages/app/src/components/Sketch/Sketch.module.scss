@@ -1,0 +1,25 @@
+.canvasWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mainCanvas,
+.childrenCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mainCanvas {
+  z-index: 1;
+}
+
+.childrenCanvas {
+  z-index: 2;
+  pointer-events: none; // Allow interactions to pass through to main canvas
+}
+

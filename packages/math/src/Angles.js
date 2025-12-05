@@ -86,11 +86,11 @@ const Angles = {
         ? cos_ >= 0
           ? a
           : // first quarter, sin + , cos +
-          Math.PI - a // second quarter, sin + , cos -
+            Math.PI - a // second quarter, sin + , cos -
         : cos_ >= 0
           ? 2 * Math.PI - a
           : // second quarter, sin - , cos +
-          Math.PI + a; // second quarter, sin - , cos -
+            Math.PI + a; // second quarter, sin - , cos -
     }
     if (type === 0) {
       // default
@@ -101,11 +101,11 @@ const Angles = {
         ? cos_ >= 0
           ? a
           : // first quarter, sin + , cos +
-          Math.PI - a // second quarter, sin + , cos -
+            Math.PI - a // second quarter, sin + , cos -
         : cos_ >= 0
           ? -a
           : // fourth quarter, sin - , cos +
-          -Math.PI + a; // third quarter, sin - , cos -
+            -Math.PI + a; // third quarter, sin - , cos -
     }
   },
 

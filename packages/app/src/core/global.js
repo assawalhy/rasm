@@ -105,12 +105,7 @@ export function getJSfunction(input, params, usestrict = true, undefThrowError =
   if (input instanceof Node) {
     result = parser.parsedTOjsFunction(input, params, 'Math', usestrict);
   } else if ((typeof input).toLowerCase() === 'object') {
-    result = parser.maximaTOjsFunction(
-      parser.latexTOmaxima(input.value),
-      params,
-      'Math',
-      usestrict,
-    );
+    result = parser.maximaTOjsFunction(parser.latexTOmaxima(input.value), params, 'Math', usestrict);
   } else {
     result = parser.maximaTOjsFunction(input, params, 'Math', usestrict);
   }

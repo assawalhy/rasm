@@ -1,5 +1,5 @@
-import BaseRenderer from './BaseRenderer.js';
 import { Core } from '@rasm/math';
+import BaseRenderer from './BaseRenderer.js';
 
 /**
  * Renderer for EvalExpr graph children (expressions that evaluate to a value)
@@ -106,8 +106,7 @@ export default class EvalExprRenderer extends BaseRenderer {
       if (fraction.denominator === 1) {
         this.elements.valueElt.innerHTML = `<span>${fraction.numerator}</span>`;
       } else {
-        this.elements.valueElt.innerHTML =
-          `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+        this.elements.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
       }
     } else {
       this.elements.valueElt.innerHTML = `<span>${value}</span>`;
@@ -123,11 +122,9 @@ export default class EvalExprRenderer extends BaseRenderer {
       if (fraction.numerator === 0) {
         this.elements.valueElt.innerHTML = `<span>${fraction.quotient}</span>`;
       } else if (fraction.quotient === 0) {
-        this.elements.valueElt.innerHTML =
-          `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+        this.elements.valueElt.innerHTML = `<span>\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
       } else {
-        this.elements.valueElt.innerHTML =
-          `<span>${fraction.quotient}\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
+        this.elements.valueElt.innerHTML = `<span>${fraction.quotient}\\frac{${fraction.numerator}}{${fraction.denominator}}</span>`;
       }
     } else {
       this.elements.valueElt.innerHTML = `<span>${value}</span>`;

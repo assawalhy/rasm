@@ -1,0 +1,165 @@
+.keypad {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fafafa;
+  border-top: 1px solid #e0e0e0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  
+  &.visible {
+    transform: translateY(0);
+  }
+}
+
+.toggleButton {
+  position: absolute;
+  top: -40px;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #f5f5f5;
+  }
+  
+  i {
+    color: #666;
+  }
+}
+
+.keypadContent {
+  max-height: 320px;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+// Grid layouts
+.mainKeypad,
+.alphaKeypad,
+.functionsKeypad {
+  width: 100%;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--grid-template-columns, repeat(auto-fit, minmax(40px, 1fr)));
+  gap: 4px;
+}
+
+.takeSpace {
+  min-width: 8px;
+}
+
+// Button base styles
+.keypadButton {
+  min-width: 36px;
+  min-height: 40px;
+  padding: 6px 8px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  
+  &:hover {
+    background: #f0f0f0;
+    border-color: #ccc;
+  }
+  
+  &:active {
+    background: #e0e0e0;
+    transform: scale(0.95);
+  }
+  
+  i {
+    font-size: 16px;
+    color: #555;
+  }
+}
+
+.numBtn {
+  background: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.nameBtn {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-weight: 500;
+}
+
+// Shift buttons
+.shift,
+.doubleShift {
+  background: #f5f5f5;
+  
+  &.active {
+    background: #2196f3;
+    border-color: #1976d2;
+    
+    i {
+      color: white;
+    }
+  }
+}
+
+.enter {
+  background: #e8f5e9;
+  
+  i {
+    color: #4caf50;
+    transform: rotate(90deg);
+  }
+}
+
+.backspace {
+  i {
+    color: #f44336;
+  }
+}
+
+// Math display styling
+.mathField {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+}
+
+// Shift label (secondary option)
+.shiftLabel {
+  font-size: 10px;
+  color: #999;
+  position: absolute;
+  top: 2px;
+  right: 4px;
+}
+
+// Shiftable button active state
+.shiftable,
+.doubleShiftable {
+  position: relative;
+}
+
