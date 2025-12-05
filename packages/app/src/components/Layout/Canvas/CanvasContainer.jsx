@@ -7,8 +7,6 @@ import styles from './CanvasContainer.module.scss';
 export default function CanvasContainer() {
   return (
     <div class={styles.canvasContainer}>
-      <Sketch />
-
       <div class={styles.tools}>
         <button type="button" title="Reset View">
           <i class="fas fa-home" />
@@ -23,6 +21,7 @@ export default function CanvasContainer() {
           <i class="fas fa-cog" />
         </button>
       </div>
+      <Sketch />
     </div>
   );
 }

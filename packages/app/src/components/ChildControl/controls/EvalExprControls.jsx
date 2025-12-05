@@ -1,10 +1,10 @@
 import { createSignal } from 'solid-js';
-import styles from './EvalExprRenderer.module.scss';
+import styles from './EvalExprControls.module.scss';
 
 /**
- * EvalExprRenderer component - displays evaluated expression results
+ * EvalExprControls component - displays evaluated expression results
  */
-export default function EvalExprRenderer(props) {
+export default function EvalExprControls(props) {
   const [displayType, setDisplayType] = createSignal('decimal'); // decimal, fraction, quotient
   const [value, setValue] = createSignal('');
 

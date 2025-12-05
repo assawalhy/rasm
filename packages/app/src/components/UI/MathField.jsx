@@ -1,4 +1,5 @@
 import { createEffect, onCleanup, onMount } from 'solid-js';
+import { mathQuill } from '@/utils/mathQuill';
 
 /**
  * MathField wrapper component for MathQuill integration
@@ -6,18 +7,13 @@ import { createEffect, onCleanup, onMount } from 'solid-js';
  */
 export default function MathField(props) {
   let fieldRef;
-  let mqInstance;
+  let mathField;
   let handleFocus;
   let handleBlur;
 
   onMount(() => {
-    if (!fieldRef || !window.MQ) {
-      console.error('MathQuill not loaded');
-      return;
-    }
-
     // Initialize MathQuill
-    const MQ = window.MQ.MathField(fieldRef, {
+    mathField = mathQuill.MathField(fieldRef, {
       spaceBehavesLikeTab: true,
       leftRightIntoCmdGoes: 'up',
       restrictMismatchedBrackets: true,
@@ -30,8 +26,8 @@ export default function MathField(props) {
       autoOperatorNames: 'sin cos tan sec csc cot sinh cosh tanh ln log',
       handlers: {
         edit: () => {
-          if (mqInstance) {
-            const latex = mqInstance.latex();
+          if (mathField) {
+            const latex = mathField.latex();
             props.onEdit?.(latex);
           }
         },
@@ -66,45 +62,43 @@ export default function MathField(props) {
     fieldRef.addEventListener('focusin', handleFocus);
     fieldRef.addEventListener('focusout', handleBlur);
 
-    mqInstance = MQ;
-
     // Set initial value if provided
     if (props.value) {
-      mqInstance.latex(props.value);
+      mathField.latex(props.value);
     }
 
     // Focus if requested
     if (props.autofocus) {
-      mqInstance.focus();
+      mathField.focus();
     }
   });
 
   // Update latex when prop changes
   createEffect(() => {
-    if (mqInstance && props.value !== undefined && mqInstance.latex() !== props.value) {
-      mqInstance.latex(props.value);
+    if (mathField && props.value !== undefined && mathField.latex() !== props.value) {
+      mathField.latex(props.value);
     }
   });
 
   // Expose methods via ref
   createEffect(() => {
-    if (props.ref && mqInstance) {
+    if (props.ref && mathField) {
       props.ref({
         latex: (value) => {
           if (value !== undefined) {
-            mqInstance.latex(value);
+            mathField.latex(value);
           }
-          return mqInstance.latex();
+          return mathField.latex();
         },
-        focus: () => mqInstance.focus(),
-        blur: () => mqInstance.blur(),
-        write: (latex) => mqInstance.write(latex),
-        cmd: (cmd) => mqInstance.cmd(cmd),
-        select: () => mqInstance.select(),
-        clearSelection: () => mqInstance.clearSelection(),
-        moveToLeftEnd: () => mqInstance.moveToLeftEnd(),
-        moveToRightEnd: () => mqInstance.moveToRightEnd(),
-        keystroke: (keys) => mqInstance.keystroke?.(keys),
+        focus: () => mathField.focus(),
+        blur: () => mathField.blur(),
+        write: (latex) => mathField.write(latex),
+        cmd: (cmd) => mathField.cmd(cmd),
+        select: () => mathField.select(),
+        clearSelection: () => mathField.clearSelection(),
+        moveToLeftEnd: () => mathField.moveToLeftEnd(),
+        moveToRightEnd: () => mathField.moveToRightEnd(),
+        keystroke: (keys) => mathField.keystroke?.(keys),
       });
     }
   });

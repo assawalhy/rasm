@@ -59,12 +59,59 @@
   }
 }
 
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .errorMessage {
   padding: 0.5rem;
   background: #ffebee;
   border-radius: 4px;
   color: #c62828;
   font-size: 0.875rem;
+}
+
+.missingItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.addMissingButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 4px;
+  color: #1976d2;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  
+  &:hover {
+    background: #bbdefb;
+    border-color: #64b5f6;
+  }
+  
+  i {
+    font-size: 0.625rem;
+  }
+}
+
+.addAllButton {
+  background: #e8f5e9;
+  border-color: #a5d6a7;
+  color: #388e3c;
+  
+  &:hover {
+    background: #c8e6c9;
+    border-color: #81c784;
+  }
 }
 
 .sideStatus {
@@ -96,3 +143,4 @@
     font-size: 0.875rem;
   }
 }
+

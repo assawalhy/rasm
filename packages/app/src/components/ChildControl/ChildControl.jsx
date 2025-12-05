@@ -4,24 +4,28 @@ import { parser } from '@rasm/math';
 import { addControl, updateControl } from '@stores/controlsStore';
 import { getSketch, isSketchReady } from '@stores/sketchInstance';
 import { requestRedraw } from '@stores/sketchStore';
-import { Show, createEffect, createSignal, onMount } from 'solid-js';
+import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import { UndefError } from '../../core/Errors/index.js';
 import { Empty } from '../../core/GraphChildren/index.js';
 import styles from './ChildControl.module.scss';
-import EmptyRenderer from './renderers/EmptyRenderer';
-import EvalExprRenderer from './renderers/EvalExprRenderer';
-import SliderRenderer from './renderers/SliderRenderer';
-import VariableRenderer from './renderers/VariableRenderer';
-import XfunctionRenderer from './renderers/XfunctionRenderer';
+import EmptyControls from './controls/EmptyControls';
+import EvalExprControls from './controls/EvalExprControls';
+import SliderControls from './controls/SliderControls';
+import VariableControls from './controls/VariableControls';
+import XfunctionControls from './controls/XfunctionControls';
 
-// Renderer map based on graph child type
-const rendererMap = {
-  Slider: SliderRenderer,
-  EvalExpr: EvalExprRenderer,
-  Xfunction: XfunctionRenderer,
-  Variable: VariableRenderer,
-  Empty: EmptyRenderer,
+// Controls map based on graph child type
+const controlsMap = {
+  Slider: SliderControls,
+  EvalExpr: EvalExprControls,
+  Xfunction: XfunctionControls,
+  Variable: VariableControls,
+  Empty: EmptyControls,
 };
+
+// Debounce delay for showing errors (ms)
+const ERROR_DEBOUNCE_MS = 500;
 
 /**
  * Get all parsed nodes matching a check from a node tree
@@ -49,13 +53,130 @@ export default function ChildControl(props) {
   const [graphChild, setGraphChild] = createSignal(props.control?.graphChild || null);
   const [updateStatus, setUpdateStatus] = createSignal('ready'); // 'ready', 'updating', 're-update'
 
-  let mathFieldRef;
+  // Undefined variables/functions tracking
+  const [missingVars, setMissingVars] = createSignal([]);
+  const [missingFuncs, setMissingFuncs] = createSignal([]);
 
-  const getRenderer = () => {
+  let mathFieldRef;
+  let errorDebounceTimer = null;
+  let pendingError = null;
+
+  // Cleanup debounce timer on unmount
+  onCleanup(() => {
+    if (errorDebounceTimer) {
+      clearTimeout(errorDebounceTimer);
+    }
+  });
+
+  const getControls = () => {
     const child = graphChild();
     if (!child) return null;
     const type = child.constructor.name;
-    return rendererMap[type] || null;
+    return controlsMap[type] || null;
+  };
+
+  /**
+   * Show error with debounce
+   */
+  const showErrorDebounced = (error) => {
+    pendingError = error;
+
+    // Clear existing timer
+    if (errorDebounceTimer) {
+      clearTimeout(errorDebounceTimer);
+    }
+
+    // Set new debounce timer
+    errorDebounceTimer = setTimeout(() => {
+      if (pendingError) {
+        displayError(pendingError);
+      }
+    }, ERROR_DEBOUNCE_MS);
+  };
+
+  /**
+   * Display error immediately
+   */
+  const displayError = (error) => {
+    if (error instanceof UndefError) {
+      // Handle undefined variables/functions specially
+      const undef = error.undef || {};
+      setMissingVars(undef.vars || []);
+      setMissingFuncs(undef.funcs || []);
+
+      const missingItems = [...(undef.vars || []), ...(undef.funcs || [])];
+      const message = missingItems.length > 0 ? `Undefined: ${missingItems.join(', ')}` : 'Undefined reference';
+
+      setIsError(true);
+      setErrorMessage(message);
+    } else {
+      // Regular error
+      setMissingVars([]);
+      setMissingFuncs([]);
+      setIsError(true);
+      setErrorMessage(error.message || 'Parse error');
+    }
+
+    updateControl(props.control.id, {
+      isError: true,
+      errorMessage: errorMessage(),
+    });
+  };
+
+  /**
+   * Clear error state
+   */
+  const clearError = () => {
+    if (errorDebounceTimer) {
+      clearTimeout(errorDebounceTimer);
+      errorDebounceTimer = null;
+    }
+    pendingError = null;
+    setIsError(false);
+    setErrorMessage('');
+    setMissingVars([]);
+    setMissingFuncs([]);
+  };
+
+  /**
+   * Add a missing variable as a new control
+   */
+  const addMissingVariable = (varName) => {
+    const currentIndex = props.order || 1;
+    // Add a control for this variable (e.g., "a = 1")
+    addControl({ latex: `${varName}=1` }, currentIndex);
+
+    // Re-parse current expression after a short delay to let the new var be registered
+    setTimeout(() => {
+      handleEdit(latex());
+    }, 100);
+  };
+
+  /**
+   * Add all missing variables as new controls
+   */
+  const addAllMissingVariables = () => {
+    const vars = missingVars();
+    const funcs = missingFuncs();
+    const currentIndex = props.order || 1;
+
+    // Add controls for all missing variables
+    let offset = 0;
+    for (const varName of vars) {
+      addControl({ latex: `${varName}=1` }, currentIndex + offset);
+      offset++;
+    }
+
+    // Add controls for all missing functions (basic function definition)
+    for (const funcName of funcs) {
+      addControl({ latex: `${funcName}(x)=x` }, currentIndex + offset);
+      offset++;
+    }
+
+    // Re-parse current expression
+    setTimeout(() => {
+      handleEdit(latex());
+    }, 100);
   };
 
   /**
@@ -80,6 +201,10 @@ export default function ChildControl(props) {
 
     setUpdateStatus('updating');
 
+    let parsedScript = null;
+    let vars = [];
+    let funcs = [];
+
     try {
       const prevChild = graphChild();
 
@@ -89,9 +214,6 @@ export default function ChildControl(props) {
       }
 
       let newGraphChild;
-      let parsedScript = null;
-      let vars = [];
-      let funcs = [];
 
       if (newLatex === '') {
         parsedScript = new Node('');
@@ -109,7 +231,7 @@ export default function ChildControl(props) {
         const childProps = {
           control: props.control,
           handlers: {
-            onerror: (e) => handleError(e),
+            onerror: (e) => displayError(e),
           },
         };
 
@@ -123,15 +245,18 @@ export default function ChildControl(props) {
 
       // Update local and store state
       setGraphChild(newGraphChild);
-      setIsError(false);
-      setErrorMessage('');
+      clearError();
 
       updateControl(props.control.id, {
         latex: newLatex,
-        graphChild: newGraphChild,
         parsedScript,
         vars,
         funcs,
+        validLatex: newLatex,
+        validParsedScript: parsedScript,
+        validVars: vars,
+        validFuncs: vars,
+        graphChild: newGraphChild,
         isError: false,
         errorMessage: '',
       });
@@ -139,7 +264,14 @@ export default function ChildControl(props) {
       // Request canvas redraw
       requestRedraw();
     } catch (e) {
-      handleError(e);
+      // Show error with debounce (don't interrupt typing)
+      showErrorDebounced(e);
+      updateControl(props.control.id, {
+        latex: newLatex,
+        parsedScript,
+        vars,
+        funcs,
+      });
     }
 
     // Check for queued re-update
@@ -151,19 +283,14 @@ export default function ChildControl(props) {
     }
   };
 
-  const handleError = (e) => {
-    console.error('ChildControl parse error:', e);
-    setIsError(true);
-    setErrorMessage(e.message || 'Parse error');
-
-    updateControl(props.control.id, {
-      isError: true,
-      errorMessage: e.message || 'Parse error',
-    });
-  };
-
   const handleEnter = () => {
-    // Add a new control after this one
+    // If there are missing variables, add them all first
+    if (missingVars().length > 0 || missingFuncs().length > 0) {
+      addAllMissingVariables();
+      return;
+    }
+
+    // Otherwise, add a new control after this one
     const currentIndex = props.order || 1;
     addControl({}, currentIndex);
     props.onEnter?.();
@@ -176,6 +303,17 @@ export default function ChildControl(props) {
 
   const handleBlur = () => {
     setIsFocused(false);
+
+    // Show any pending error immediately on blur
+    if (pendingError) {
+      if (errorDebounceTimer) {
+        clearTimeout(errorDebounceTimer);
+        errorDebounceTimer = null;
+      }
+      displayError(pendingError);
+      pendingError = null;
+    }
+
     props.onBlur?.();
   };
 
@@ -216,12 +354,57 @@ export default function ChildControl(props) {
           />
         </div>
 
-        <Show when={getRenderer()}>
-          <Dynamic component={getRenderer()} graphChild={graphChild()} control={props.control} />
+        <Show when={getControls()}>
+          <Dynamic component={getControls()} graphChild={graphChild()} control={props.control} />
         </Show>
 
+        {/* Error message with undefined variable buttons */}
         <Show when={isError()}>
-          <div class={styles.errorMessage}>{errorMessage()}</div>
+          <div class={styles.errorContainer}>
+            <div class={styles.errorMessage}>{errorMessage()}</div>
+
+            {/* Buttons to add missing variables/functions */}
+            <Show when={missingVars().length > 0 || missingFuncs().length > 0}>
+              <div class={styles.missingItems}>
+                <For each={missingVars()}>
+                  {(varName) => (
+                    <button
+                      type="button"
+                      class={styles.addMissingButton}
+                      onClick={() => addMissingVariable(varName)}
+                      title={`Add variable ${varName}`}
+                    >
+                      <i class="fas fa-plus" /> {varName}
+                    </button>
+                  )}
+                </For>
+                <For each={missingFuncs()}>
+                  {(funcName) => (
+                    <button
+                      type="button"
+                      class={styles.addMissingButton}
+                      onClick={() => addMissingVariable(funcName)}
+                      title={`Add function ${funcName}`}
+                    >
+                      <i class="fas fa-plus" /> {funcName}()
+                    </button>
+                  )}
+                </For>
+
+                {/* Add all button if multiple missing */}
+                <Show when={missingVars().length + missingFuncs().length > 1}>
+                  <button
+                    type="button"
+                    class={`${styles.addMissingButton} ${styles.addAllButton}`}
+                    onClick={addAllMissingVariables}
+                    title="Add all missing (or press Enter)"
+                  >
+                    <i class="fas fa-plus-circle" /> Add all
+                  </button>
+                </Show>
+              </div>
+            </Show>
+          </div>
         </Show>
       </div>
 

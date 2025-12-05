@@ -1,10 +1,10 @@
 import { createSignal } from 'solid-js';
-import styles from './XfunctionRenderer.module.scss';
+import styles from './XfunctionControls.module.scss';
 
 /**
- * XfunctionRenderer component - displays function with visibility toggle
+ * XfunctionControls component - displays function with visibility toggle
  */
-export default function XfunctionRenderer(props) {
+export default function XfunctionControls(props) {
   const [isVisible, setIsVisible] = createSignal(true);
   const [color, setColor] = createSignal('#667eea');
 

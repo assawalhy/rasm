@@ -24,11 +24,15 @@ function createControl(options = {}) {
     id: options.id || generateControlId(),
     latex: options.latex || '',
     graphChild: options.graphChild || null,
-    isError: false,
-    errorMessage: '',
     parsedScript: null,
     vars: [],
     funcs: [],
+    validLatex: options.latex || '',
+    validParsedScript: null,
+    validVars: [],
+    validFuncs: [],
+    isError: false,
+    errorMessage: '',
   };
 }
 

@@ -2,6 +2,7 @@ import App from '@components/App/App';
 // SolidJS entry point
 import { render } from 'solid-js/web';
 import './style.css';
+import 'solid-devtools';
 
 const root = document.getElementById('root');
 if (root) {

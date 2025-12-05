@@ -1,10 +1,10 @@
 import { createEffect, createSignal } from 'solid-js';
-import styles from './SliderRenderer.module.scss';
+import styles from './SliderControls.module.scss';
 
 /**
- * SliderRenderer component - replaces class-based SliderRenderer
+ * SliderControls component - controls for Slider graph child
  */
-export default function SliderRenderer(props) {
+export default function SliderControls(props) {
   const [value, setValue] = createSignal(props.graphChild?.getValue() || 0);
   const [isPlaying, setIsPlaying] = createSignal(false);
   const [min, setMin] = createSignal(-5);
@@ -106,16 +106,22 @@ export default function SliderRenderer(props) {
       {showController() && (
         <div class={styles.sliderController}>
           <div class={styles.controlRow}>
-            <label>min:</label>
-            <span class={styles.controlValue}>{min()}</span>
+            <span>min:</span>
+            <span data-math={true} class={styles.controlValue}>
+              {min()}
+            </span>
           </div>
           <div class={styles.controlRow}>
-            <label>max:</label>
-            <span class={styles.controlValue}>{max()}</span>
+            <span>max:</span>
+            <span data-math={true} class={styles.controlValue}>
+              {max()}
+            </span>
           </div>
           <div class={styles.controlRow}>
-            <label>step:</label>
-            <span class={styles.controlValue}>{step()}</span>
+            <span>step:</span>
+            <span data-math={true} class={styles.controlValue}>
+              {step()}
+            </span>
           </div>
         </div>
       )}
