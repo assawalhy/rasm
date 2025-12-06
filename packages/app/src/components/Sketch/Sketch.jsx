@@ -15,7 +15,7 @@ import {
   ANGLE_MARGIN,
 } from '@stores/graphSettingsStore';
 import { forceRedraw, requestRedraw, setSketchState } from '@stores/sketchStore';
-import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
+import { createEffect, createSignal, on, onCleanup, onMount } from 'solid-js';
 import styles from './Sketch.module.scss';
 import { Angles, Core, Lines, Vector } from '@rasm/math';
 
@@ -67,20 +67,15 @@ export default function Sketch(props) {
   });
 
   // Sync activeAxis to core sketch for rendering
-  createEffect(() => {
-    const sketch = getSketch();
-    if (sketch) {
-      sketch.activeAxis = activeAxis();
-      requestRedraw();
-    }
-  });
-
-  createEffect(() => {
-    // React to needsRedraw flag changes when sketch is ready
-    if (isSketchReady()) {
-      requestRedraw();
-    }
-  });
+  createEffect(
+    on(activeAxis, () => {
+      const sketch = getSketch();
+      if (sketch) {
+        sketch.activeAxis = activeAxis();
+        requestRedraw();
+      }
+    }),
+  );
 
   onCleanup(() => {
     window.removeEventListener('resize', resizeCanvas);
