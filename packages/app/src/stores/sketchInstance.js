@@ -38,13 +38,3 @@ export function isSketchReady() {
   return sketchInstance !== null;
 }
 
-/**
- * Generate a unique control ID
- * @returns {string}
- */
-export function generateControlId() {
-  return (Date.now() + generateControlId.counter++).toString(36).replace(/\d/g, (num) => {
-    return String.fromCharCode(97 + Number.parseInt(num));
-  });
-}
-generateControlId.counter = 0;

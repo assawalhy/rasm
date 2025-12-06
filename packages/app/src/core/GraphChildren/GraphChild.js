@@ -1,21 +1,25 @@
+import { graphSettings, mathToPixel } from '@stores/graphSettingsStore';
 import { generateName } from '../global.js';
+
+/**
+ * Base class for all graph children (functions, points, sliders, etc.)
+ * Uses graphSettingsStore for viewport and coordinate transformations
+ */
 export default class GraphChild {
   /**
    * @param {*} options
-   * include these ptoperties:
+   * include these properties:
    * 1. sketch
    * 2. id
    * 3. [pen] ::: for drawable children that will be drawn in the canvas
    * 4. [handlers] ::: {
-   *      onchange ::: for the silder,
-   *      onupdate :: updating the drawing object that will be useing in the rendering process,
+   *      onchange ::: for the slider,
+   *      onupdate :: updating the drawing object that will be using in the rendering process,
    *      ondrender::: rendering the graphics object coming from the latest finished updating process,
    *      onerror,
    *      onremove
    *  }
-   * 5. [renderable] ::: boolean that indecate wheather or not you want to make this graphChild updated and renderd, if it is false so the this is deactivated
-   *
-   *
+   * 5. [renderable] ::: boolean that indicate whether or not you want to make this graphChild updated and rendered
    */
   constructor(options, callback) {
     this.handlers = options.handlers || {};
@@ -23,15 +27,11 @@ export default class GraphChild {
 
     if (!options.sketch) {
       throw new Error(
-        "Your options passed to the shetchChild is not valid, it doesn't has " +
-          'sketch' +
-          ' property, or it is falsy value',
+        "Your options passed to the sketchChild is not valid, it doesn't have 'sketch' property, or it is falsy value",
       );
     }
 
     this.sketch = options.sketch;
-    this.gs = this.sketch.gs;
-    this.coorManager = this.gs.coorManager;
 
     const optionsClone = { ...options };
     // biome-ignore lint/performance/noDelete: <explanation>
@@ -45,13 +45,33 @@ export default class GraphChild {
 
     if (callback) callback(this);
 
-    this.sketch.children.set(this.id, this); /// this must be at the bottom so that if an error occured, no new graphChild is added
+    this.sketch.children.set(this.id, this);
   }
+
+  /**
+   * Get viewport from store
+   */
+  get viewport() {
+    return graphSettings.viewport;
+  }
+
+  /**
+   * Convert math coordinates to pixel coordinates
+   */
+  mathToPixel(x, y) {
+    return mathToPixel(x, y);
+  }
+
   get id() {
     return this._id;
   }
+
   set id(value) {
-    this._id = this.sketch.gs.checkId(value);
+    // Simple ID validation (no duplicates in sketch children)
+    if (this.sketch.children.has(value) && this.sketch.children.get(value) !== this) {
+      throw new Error(`ID "${value}" already exists in sketch`);
+    }
+    this._id = value;
   }
 
   /**
@@ -77,9 +97,9 @@ export default class GraphChild {
     }
   }
 
-  _update(canvas) {}
+  _update(canvas) { }
 
-  _draw(canvas) {}
+  _draw(canvas) { }
 
   remove(handlerArgs = []) {
     this._remove();
@@ -87,9 +107,13 @@ export default class GraphChild {
     if (this.handlers.onremove) this.handlers.onremove(...handlerArgs);
   }
 
-  _remove() {}
+  _remove() { }
 
   error(e) {
-    this.handlers.onerror(e);
+    if (this.handlers.onerror) {
+      this.handlers.onerror(e);
+    } else {
+      console.error('GraphChild error:', e);
+    }
   }
 }

@@ -34,11 +34,11 @@ export default class CoorManager {
     this.id = inverse.d;
   }
 
-  coorTOpx(x, y) {
+  mathToPixel(x, y) {
     return { x: this.xToPixel(x, y), y: this.yToPixel(x, y) };
   }
 
-  pxTOcoor(x, y) {
+  pixelToMath(x, y) {
     return { x: this.xTOcoor(x, y), y: this.yTOcoor(x, y) };
   }
 

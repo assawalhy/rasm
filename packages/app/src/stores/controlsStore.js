@@ -1,5 +1,4 @@
 import { createStore } from 'solid-js/store';
-import { generateControlId } from './sketchInstance.js';
 
 /**
  * Global controls store for managing graph element controls
@@ -111,6 +110,17 @@ function setMathField(mathField) {
   setControls('keypadSettings', 'mathField', mathField);
 }
 
+/**
+ * Generate a unique control ID
+ * @returns {string}
+ */
+function generateControlId() {
+  return (Date.now() + generateControlId.counter++).toString(36).replace(/\d/g, (num) => {
+    return String.fromCharCode(97 + Number.parseInt(num));
+  });
+}
+generateControlId.counter = 0;
+
 export {
   controls,
   setControls,
@@ -123,4 +133,5 @@ export {
   blurControl,
   toggleKeypad,
   setMathField,
+  generateControlId
 };

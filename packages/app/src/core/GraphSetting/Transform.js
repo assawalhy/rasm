@@ -47,7 +47,7 @@ export default class {
       this._transformOrigin = {
         pxVector: pxVector,
       };
-      const coor = this.coorManager.pxTOcoor(pxVector.x, pxVector.y);
+      const coor = this.coorManager.pixelToMath(pxVector.x, pxVector.y);
       this._transformOrigin.coorVector = new Vector(coor.x, coor.y);
     } else {
       this._transformOrigin = undefined;
@@ -266,7 +266,7 @@ export default class {
     viewport.ymax = viewport.ymax === 0 ? 0 : viewport.ymax || this.gs.viewport.ymax;
     const a = this.invokeOnchange;
     this.invokeOnchange = false;
-    const p = this.coorManager.pxTOcoor(this.gs.width / 2, this.gs.height / 2);
+    const p = this.coorManager.pixelToMath(this.gs.width / 2, this.gs.height / 2);
 
     //#endregion
 
@@ -301,13 +301,13 @@ export default class {
     //#region aftercalulations
 
     this.onchange(true);
-    let tfCorner = this.coorManager.coorTOpx(viewport.xmin, viewport.ymax);
+    let tfCorner = this.coorManager.mathToPixel(viewport.xmin, viewport.ymax);
     tfCorner = new Vector(tfCorner.x, tfCorner.y);
     /// translation::: put the top left corner as pixels after transformations on top of the one before transformation
     this.translate(tfCorner.mult(-1));
     this.onchange(true);
     if (keepRatio) {
-      const p_ = this.coorManager.coorTOpx(p.x, (viewport.ymax + viewport.ymin) / 2);
+      const p_ = this.coorManager.mathToPixel(p.x, (viewport.ymax + viewport.ymin) / 2);
       this.translate(new Vector(0, this.gs.height / 2 - p_.y));
     }
     this.onchange();
@@ -549,7 +549,7 @@ export default class {
       if (this.transformOrigin && transToOrigin) {
         const a = this.invokeOnchange;
         this.invokeOnchange = false;
-        const p = this.coorManager.coorTOpx(...this.transformOrigin.coorVector.toArray());
+        const p = this.coorManager.mathToPixel(...this.transformOrigin.coorVector.toArray());
         this.translate(this.transformOrigin.pxVector.subtract(p));
         this.onchange(true, false);
         this.invokeOnchange = a;

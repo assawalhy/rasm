@@ -1,17 +1,14 @@
+import { graphSettings, mathToPixel } from '@stores/graphSettingsStore';
 import { Pen, colorPackage } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 import GraphChild from '../GraphChild.js';
 
 export default class Xfunction extends GraphChild {
-  /**
-   * gs stands for graphSetting.
-   */
   constructor(options) {
-    //#region
     const idExists = options.id;
     if (!options.expr) {
       throw new Error(
-        `Your options passed to the shetchChild is not valid, it doesn't has ${propName} property, or it is falsy value`,
+        "Your options passed to the sketchChild is not valid, it doesn't have 'expr' property, or it is falsy value",
       );
     }
     if (!options.pen) {
@@ -21,7 +18,6 @@ export default class Xfunction extends GraphChild {
       c.a = 155;
       options.pen = new Pen(c, 2);
     }
-    //#endregion
 
     super(options, (me) => {
       me.expression = getJSfunction(me.expr, ['x'], true);
@@ -34,7 +30,7 @@ export default class Xfunction extends GraphChild {
   }
 
   static fromString(expr, sketch) {
-    if (str.replace(/==+/, '').indexOf('=') > -1) throw new Error('there is "=" opertor!');
+    if (str.replace(/==+/, '').indexOf('=') > -1) throw new Error('there is "=" operator!');
     return new Xfunction({ expr, sketch });
   }
 
@@ -44,9 +40,12 @@ export default class Xfunction extends GraphChild {
     let midP;
     let continous;
     const path = new Path2D();
-    for (let x = this.gs.viewport.xmin; x <= this.gs.viewport.xmax; x += this.gs.drawingStep) {
-      p = this.coorManager.coorTOpx(x, this.expression(x));
-      midP = this.coorManager.coorTOpx(x - this.gs.drawingStep / 2, this.expression(x - this.gs.drawingStep / 2));
+    const vp = this.viewport;
+    const drawingStep = graphSettings.xSpaceValue / graphSettings.xSpace;
+
+    for (let x = vp.xmin; x <= vp.xmax; x += drawingStep) {
+      p = mathToPixel(x, this.expression(x));
+      midP = mathToPixel(x - drawingStep / 2, this.expression(x - drawingStep / 2));
       // if valid add new point, unless add the array of point if has more than point
       const valid =
         !isNaN(p.x) &&
@@ -55,7 +54,7 @@ export default class Xfunction extends GraphChild {
         Math.abs(p.y) < 100000 &&
         ((continous &&
           (Math.sign(p.y - midP.y) === Math.sign(midP.y - previousP.y) ||
-            Math.abs(p.y - previousP.y) / this.gs.drawingStep < 20)) ||
+            Math.abs(p.y - previousP.y) / drawingStep < 20)) ||
           !continous);
       if (!valid) {
         if (continous) {

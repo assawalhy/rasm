@@ -67,6 +67,17 @@ bunx turbo --filter @rasm/app preview
 - [ ] Share the graph as a link
 - [ ] Save the graph as an image
 - [ ] Record a video for the canvas
+- [ ] Better performance
+  - [ ] More threads using WebWorker
+  - [ ] GPU computing using WebGPU
+  - [ ] Low level compiled languages using WebAssembly 
+- [ ] Configure the coordinates display
+  - [ ] Show axes labels and change in settings
+  - [ ] Show grid lines and change in settings
+  - [ ] Add units to the axes
+  - [ ] Scientific way to display the acess with the axes sticked to the left and the bottom only
+  - [ ] Show diffrent types of coordinates
+    - [ ] Radian coordinates like that exists in GeoGebra
 - [ ] Build a backend so someone can store his own drawings and visit later
 - [ ] History control (undo and redo)
 - [ ] Versioning control and save a version
