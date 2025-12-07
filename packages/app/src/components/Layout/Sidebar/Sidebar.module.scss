@@ -47,29 +47,3 @@
     }
   }
 }
-
-.addButton {
-  padding: 1rem;
-  border-top: 1px solid #e0e0e0;
-  
-  button {
-    width: 100%;
-    padding: 0.75rem;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background: #5568d3;
-    }
-    
-    i {
-      margin-right: 0.5rem;
-    }
-  }
-}

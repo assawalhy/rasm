@@ -1,5 +1,13 @@
+import { IconArrowLeft, IconArrowRight, IconBackspace } from '@tabler/icons-solidjs';
+import { Dynamic } from 'solid-js/web';
 import { Show, createSignal, onCleanup } from 'solid-js';
 import styles from './Keypad.module.scss';
+
+const ICON_MAP = {
+  backspace: IconBackspace,
+  'arrow-left': IconArrowLeft,
+  'arrow-right': IconArrowRight,
+};
 
 /**
  * Reusable keypad button component
@@ -51,8 +59,8 @@ export default function KeypadButton(props) {
   };
 
   const getDisplayContent = () => {
-    if (props.icon) {
-      return <i class={`fas fa-${props.icon}`} />;
+    if (props.icon && ICON_MAP[props.icon]) {
+      return <Dynamic component={ICON_MAP[props.icon]} size={18} />;
     }
     if (props.mathDisplay) {
       return <span class={styles.mathField}>{props.mathDisplay}</span>;

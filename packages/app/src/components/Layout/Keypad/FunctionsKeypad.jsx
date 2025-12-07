@@ -1,4 +1,6 @@
+import { IconArrowsExchange, IconArrowsShuffle } from '@tabler/icons-solidjs';
 import { For } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import styles from './Keypad.module.scss';
 import KeypadButton, { KeypadSpacer } from './KeypadButton';
 
@@ -6,6 +8,11 @@ import KeypadButton, { KeypadSpacer } from './KeypadButton';
  * Functions keypad with trig, hyperbolic, log, and calculus functions
  */
 export default function FunctionsKeypad(props) {
+  const ACTION_ICON_MAP = {
+    'exchange-alt': IconArrowsExchange,
+    random: IconArrowsShuffle,
+  };
+
   // Row 1: Trig functions
   const row1 = [
     {
@@ -132,7 +139,7 @@ export default function FunctionsKeypad(props) {
                         }}
                         onClick={() => handleActionClick(btn.action)}
                       >
-                        <i class={`fas fa-${btn.icon}`} />
+                        <Dynamic component={ACTION_ICON_MAP[btn.icon]} size={18} />
                       </button>
                     );
                   }

@@ -1,6 +1,10 @@
 /**
  * EmptyControls component - for empty/placeholder controls
  */
-export default function EmptyControls(props) {
+function EmptyControls(props) {
   return null; // Empty controls don't need additional UI
 }
+
+export default {
+  Bottom: EmptyControls,
+};

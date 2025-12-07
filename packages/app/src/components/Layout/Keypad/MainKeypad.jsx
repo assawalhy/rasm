@@ -1,4 +1,12 @@
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconArrowsExchange,
+  IconBackspace,
+  IconCornerDownLeft,
+} from '@tabler/icons-solidjs';
 import { For } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import styles from './Keypad.module.scss';
 import KeypadButton, { KeypadSpacer } from './KeypadButton';
 
@@ -7,6 +15,14 @@ import KeypadButton, { KeypadSpacer } from './KeypadButton';
  * 5 rows x 9 columns layout
  */
 export default function MainKeypad(props) {
+  const ACTION_ICON_MAP = {
+    backspace: IconBackspace,
+    'exchange-alt': IconArrowsExchange,
+    'arrow-left': IconArrowLeft,
+    'arrow-right': IconArrowRight,
+    'level-down-alt': IconCornerDownLeft,
+  };
+
   // Row 1: Powers and brackets
   const row1 = [
     { type: 'write', value: '^2', mathDisplay: 'a²' },
@@ -101,7 +117,7 @@ export default function MainKeypad(props) {
                         classList={{ [styles.active]: btn.action === 'shift' && props.isShifted }}
                         onClick={() => handleButtonClick(btn)}
                       >
-                        <i class={`fas fa-${btn.icon}`} />
+                        <Dynamic component={ACTION_ICON_MAP[btn.icon]} size={20} />
                       </button>
                     );
                   }

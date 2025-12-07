@@ -6,6 +6,8 @@ import { getSketch, isSketchReady } from '@stores/sketchInstance';
 import { requestRedraw } from '@stores/sketchStore';
 import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import { Button } from '@components/ui/button';
+import { IconX } from '@tabler/icons-solidjs';
 import { UndefError } from '../../core/Errors/index.js';
 import { Empty } from '../../core/GraphChildren/index.js';
 import styles from './ChildControl.module.scss';
@@ -70,7 +72,7 @@ export default function ChildControl(props) {
 
   const getControls = () => {
     const child = graphChild();
-    if (!child) return null;
+    if (!child) return controlsMap.Empty;
     const type = child.constructor.name;
     return controlsMap[type] || null;
   };
@@ -79,6 +81,8 @@ export default function ChildControl(props) {
    * Show error with debounce
    */
   const showErrorDebounced = (error) => {
+    console.error('child control error', graphChild());
+    console.error(error);
     pendingError = error;
 
     // Clear existing timer
@@ -319,6 +323,7 @@ export default function ChildControl(props) {
 
   // Sync with props.control changes
   createEffect(() => {
+    console.log('syncing', props);
     if (props.control) {
       if (props.control.latex !== latex()) {
         setLatex(props.control.latex || '');
@@ -329,6 +334,30 @@ export default function ChildControl(props) {
     }
   });
 
+  /**
+   * Toggle graph child visibility
+   */
+  const toggleVisibility = () => {
+    const child = graphChild();
+    if (child) {
+      child.renderable = !child.renderable;
+      // Force update to reflect change
+      setGraphChild({ ...child });
+      requestRedraw();
+    }
+  };
+
+  const getLeftControls = () => {
+    const Comp = getControls();
+    return Comp?.Left ? Comp.Left : null;
+  };
+
+  const getBottomControls = () => {
+    const Comp = getControls();
+    // If it has a Bottom property, use that. Otherwise, the component itself is the bottom control (legacy support)
+    return Comp?.Bottom ? Comp.Bottom : Comp?.Left ? null : Comp;
+  };
+
   return (
     <div
       class={styles.childControl}
@@ -337,8 +366,14 @@ export default function ChildControl(props) {
         [styles.error]: isError(),
       }}
     >
-      <div class={styles.order}>{props.order || 1}</div>
+      {/* Left Column: Specific controls like Color Picker */}
+      <div class={styles.leftControls}>
+        <Show when={getLeftControls()}>
+          <Dynamic component={getLeftControls()} graphChild={graphChild()} control={props.control} />
+        </Show>
+      </div>
 
+      {/* Main Column: MathField and Bottom Controls */}
       <div class={styles.main}>
         <div class={styles.script}>
           <MathField
@@ -354,8 +389,8 @@ export default function ChildControl(props) {
           />
         </div>
 
-        <Show when={getControls()}>
-          <Dynamic component={getControls()} graphChild={graphChild()} control={props.control} />
+        <Show when={getBottomControls()}>
+          <Dynamic component={getBottomControls()} graphChild={graphChild()} control={props.control} />
         </Show>
 
         {/* Error message with undefined variable buttons */}
@@ -408,9 +443,20 @@ export default function ChildControl(props) {
         </Show>
       </div>
 
+      {/* Right Column: Delete and Order/Visibility */}
       <div class={styles.sideStatus}>
-        <button type="button" class={styles.removeButton} onClick={() => props.onRemove?.()} title="Remove">
-          <i class="fas fa-times" />
+        <Button variant="ghost" size="xs" class={styles.removeButton} onClick={() => props.onRemove?.()} title="Remove">
+          <IconX size={16} />
+        </Button>
+
+        <button
+          type="button"
+          class={styles.order}
+          classList={{ [styles.hidden]: graphChild() && !graphChild().renderable }}
+          onClick={toggleVisibility}
+          title={graphChild() && !graphChild().renderable ? 'Show' : 'Hide'}
+        >
+          {props.order || 1}
         </button>
       </div>
     </div>

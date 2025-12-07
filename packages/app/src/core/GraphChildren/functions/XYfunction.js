@@ -1,4 +1,4 @@
-import { Pen, colorPackage } from '../../drawing';
+import { Pen, randomDarkColor, randomLightColor } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 /****************************************************************/
 /****************************************************************/
@@ -22,8 +22,8 @@ export default class XYfunction extends GraphChild {
 
     if (!options.pen) {
       const c = options.sketch.coor.coorSettings.background.isDark()
-        ? colorPackage.randomLightColor()
-        : colorPackage.randomDarkColor();
+        ? randomLightColor()
+        : randomDarkColor();
       c.a = 155;
       options.pen = new Pen(c, 2);
     }

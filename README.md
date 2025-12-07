@@ -65,6 +65,7 @@ bunx turbo --filter @rasm/app preview
 ## TODOs
 
 - [ ] Share the graph as a link
+  - [ ] Disable sharing if a CSV was uploaded or the graph children can't be serialized
 - [ ] Save the graph as an image
 - [ ] Record a video for the canvas
 - [ ] Better performance
@@ -76,27 +77,31 @@ bunx turbo --filter @rasm/app preview
   - [ ] Show grid lines and change in settings
   - [ ] Add units to the axes
   - [ ] Scientific way to display the acess with the axes sticked to the left and the bottom only
-  - [ ] Show diffrent types of coordinates
-    - [ ] Radian coordinates like that exists in GeoGebra
+  - [ ] Polar coordinates like that exists in GeoGebra
+  - [ ] Logarithmic scale of either of the axes
 - [ ] Build a backend so someone can store his own drawings and visit later
+  - [ ] Store data files like CSV files
 - [ ] History control (undo and redo)
 - [ ] Versioning control and save a version
 - [ ] Support more math values
   - [ ] Make it support matrices
   - [ ] Make it support complex numbers
 - [ ] Draw fractals and The Mandelbrot set
-- [ ] More graph children and controls
-  - [ ] Implicit functions
-  - [ ] Polar functions
-    - [ ] $(f(t), g(t))$
-    - [ ] $r = f(\theta)$
-- [ ]  Long press on a math-field causing a tools bar to appear with a copy as ($\TeX$, ASCII-math), clear.
-- [ ]  More advanced objects side panel
-    - [ ]  Maybe folders and expressions like Desmos or some thing more flexible like Jupiter Py
+- [ ] Frequency domain and Fourier transform
+- [ ] New graph children
+  - [ ] Implicit functions like $(x^{2}+y^{2}-1)^{3}=x^{2}y^{3}$
+  - [ ] $(f(t), g(t))$
+  - [ ] Polar functions: $r = f(\theta)$
+- [ ] Long press on a math-field causing a tools bar to appear with a copy as ($\TeX$, ASCII-math), clear.
+- [ ] More advanced sidebar
+    - [ ] Maybe folders and expressions like Desmos or some thing more flexible like Jupiter Py
     - [ ] Make it sortable and foldable
-    - [ ]  Shift CTRL+{{direction}} to move the expression block
-- [ ]  Open equation editor `mathquill` in a floating component for larger view to see the full expression
+- [ ] Keyboard hotkeys
+  - [ ] Move and sort the child controls
+  - [ ] Zoom in/out and pan the canvas
+- [ ] Open equation editor `mathquill` in a floating component for larger view to see the full expression
 - [ ] OCR for handwritten equations
+- [ ] Studing and discovering `matplotlib` Python package and Matlab
 
 ## License
 

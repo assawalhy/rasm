@@ -1,5 +1,8 @@
-import { createEffect, createSignal } from 'solid-js';
+import { createEffect, createSignal, onCleanup } from 'solid-js';
+import { registerSlider, unregisterSlider } from '@stores/animationStore';
 import styles from './SliderControls.module.scss';
+import { requestRedraw } from '@stores/sketchStore';
+import { IconChevronDown, IconChevronUp, IconPlayerPause, IconPlayerPlay } from '@tabler/icons-solidjs';
 
 /**
  * SliderControls component - controls for Slider graph child
@@ -11,6 +14,7 @@ export default function SliderControls(props) {
   const [max, setMax] = createSignal(5);
   const [step, setStep] = createSignal(0.01);
   const [showController, setShowController] = createSignal(false);
+  const [direction, setDirection] = createSignal(1);
 
   let minFieldRef;
   let maxFieldRef;
@@ -29,18 +33,54 @@ export default function SliderControls(props) {
 
     if (props.graphChild) {
       props.graphChild.setValue(newValue);
+      requestRedraw();
     }
   };
 
   const handleSliderInput = (e) => {
     const newValue = Number.parseFloat(e.target.value);
     setValue(newValue);
+    if (props.graphChild) {
+      props.graphChild.setValue(newValue);
+      requestRedraw();
+    }
+  };
+
+  const updateAnimation = () => {
+    let newVal = value() + step() * direction();
+
+    if (newVal >= max()) {
+      newVal = max();
+      setDirection(-1);
+    } else if (newVal <= min()) {
+      newVal = min();
+      setDirection(1);
+    }
+
+    setValue(newVal);
+    if (props.graphChild) {
+      props.graphChild.setValue(newVal);
+    }
   };
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying());
-    // Integrate with slidersAutoplay store
+    const playing = !isPlaying();
+    setIsPlaying(playing);
+
+    if (props.graphChild?.id) {
+      if (playing) {
+        registerSlider(props.graphChild.id, updateAnimation);
+      } else {
+        unregisterSlider(props.graphChild.id);
+      }
+    }
   };
+
+  onCleanup(() => {
+    if (props.graphChild?.id) {
+      unregisterSlider(props.graphChild.id);
+    }
+  });
 
   const handleMinChange = (latex) => {
     try {
@@ -84,7 +124,7 @@ export default function SliderControls(props) {
           onClick={() => setShowController(!showController())}
           title="Toggle Controls"
         >
-          <i class={`fas fa-angle-${showController() ? 'up' : 'down'}`} />
+          {showController() ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
         </button>
 
         <input
@@ -99,7 +139,7 @@ export default function SliderControls(props) {
         />
 
         <button type="button" class={styles.playPause} onClick={togglePlay} title={isPlaying() ? 'Pause' : 'Play'}>
-          <i class={`fas fa-${isPlaying() ? 'pause' : 'play'}`} />
+          {isPlaying() ? <IconPlayerPause size={14} /> : <IconPlayerPlay size={14} />}
         </button>
       </div>
 

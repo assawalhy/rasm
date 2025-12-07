@@ -1,5 +1,5 @@
 import { graphSettings, mathToPixel } from '@stores/graphSettingsStore';
-import { Pen, colorPackage } from '../../drawing';
+import { Pen, randomDarkColor, randomLightColor } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 import GraphChild from '../GraphChild.js';
 
@@ -13,8 +13,8 @@ export default class Xfunction extends GraphChild {
     }
     if (!options.pen) {
       const c = options.sketch.coor.coorSettings.background.isDark()
-        ? colorPackage.randomLightColor()
-        : colorPackage.randomDarkColor();
+        ? randomLightColor()
+        : randomDarkColor();
       c.a = 155;
       options.pen = new Pen(c, 2);
     }

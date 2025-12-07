@@ -1,43 +1,17 @@
-.xfunction {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
-.visibilityButton {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #667eea;
+.colorTrigger {
+  width: 24px;
+  height: 24px;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  border: 2px solid transparent !important;
   transition: all 0.2s;
-  
-  &:hover {
-    background: #f5f5f5;
-  }
-  
-  &.hidden {
-    color: #999;
-    
-    &:hover {
-      color: #667eea;
-    }
-  }
-  
-  i {
-    font-size: 0.875rem;
-  }
-}
+  background-clip: padding-box;
+  /* ensure invalid colors don't break layout */
+  min-width: 24px;
 
-.colorIndicator {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.2);
+  }
 }

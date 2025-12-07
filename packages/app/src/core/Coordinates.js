@@ -1,5 +1,5 @@
 import { graphSettings, xToPixel, yToPixel, mathToPixel, getIVector, getJVector } from '@stores/graphSettingsStore';
-import { Color, Pen } from './drawing/index.js';
+import { Color, Pen } from './drawing';
 import { Vector } from '@rasm/math';
 
 /**
@@ -17,7 +17,7 @@ export default class Coordinates {
       xUnit: '',
       yUnit: '',
 
-      background: new Color(255, 255, 255, 255),
+      background: new Color("white"),
       font: 'Georgia',
 
       drawDecimalLines: true,
@@ -43,18 +43,18 @@ export default class Coordinates {
     };
 
     Object.assign(defaultCoorSettings, {
-      color: defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 255) : new Color(50, 50, 50, 1),
+      color: defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 1) : new Color(50, 50, 50, 1),
       antiBackground: defaultCoorSettings.background.isDark()
-        ? new Color(200, 200, 200, 255)
+        ? new Color(200, 200, 200, 1)
         : new Color(50, 50, 50, 1),
       drawDecimalLines: !defaultCoorSettings.background.isDark(),
       penDecimalLines: new Pen(
-        defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 30 / 255) : new Color(50, 50, 50, 30 / 255),
+        defaultCoorSettings.background.isDark() ? new Color(200, 200, 200, 0.15) : new Color(50, 50, 50, 0.15),
         1,
       ),
       penMainLines: new Pen(
         defaultCoorSettings.background.isDark()
-          ? new Color(200, 200, 200, 100 / 255)
+          ? new Color(200, 200, 200, 0.3)
           : new Color(50, 50, 50, 100 / 255),
         1,
       ),
@@ -143,7 +143,7 @@ export default class Coordinates {
       canvas.ctx.beginPath();
       // Check for highlight
       if (this.sketch.activeAxis === 'x' || this.sketch.activeAxis === 'xy') {
-        const highlightPen = new Pen(new Color(255, 0, 0, 155), 2);
+        const highlightPen = new Pen(new Color(255, 0, 0, 0.5), 2);
         highlightPen.setup(canvas);
       } else {
         this.coorSettings.penXaxis.setup(canvas);
@@ -153,7 +153,7 @@ export default class Coordinates {
 
       canvas.ctx.beginPath();
       if (this.sketch.activeAxis === 'y' || this.sketch.activeAxis === 'xy') {
-        const highlightPen = new Pen(new Color(255, 0, 0, 155), 2);
+        const highlightPen = new Pen(new Color(255, 0, 0, 0.5), 2);
         highlightPen.setup(canvas);
       } else {
         this.coorSettings.penYaxis.setup(canvas);

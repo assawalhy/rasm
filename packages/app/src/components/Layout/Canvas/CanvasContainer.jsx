@@ -1,8 +1,19 @@
 import CoordinatesDisplay from '@components/CoordinatesDisplay/CoordinatesDisplay';
 import Sketch from '@components/Sketch/Sketch';
+import { Button } from '@components/ui/button';
 import { centerOrigin, resetView, zoomIn, zoomOut } from '@stores/graphSettingsStore';
+import {
+  IconArrowsMove,
+  IconCrosshair,
+  IconHome,
+  IconMaximize,
+  IconRotate,
+  IconZoomIn,
+  IconZoomOut,
+} from '@tabler/icons-solidjs';
 import { createSignal } from 'solid-js';
 import styles from './CanvasContainer.module.scss';
+import { css } from 'styled-system/css';
 
 /**
  * Canvas container with sketch component and tool buttons
@@ -27,45 +38,51 @@ export default function CanvasContainer() {
   return (
     <div class={styles.canvasContainer}>
       <div class={styles.tools}>
-        <button
-          type="button"
+        <Button
           title="Pan Tool"
-          class={interactionMode() === 'pan' ? styles.active : ''}
+          class={css({
+            bg: interactionMode() === 'pan' && 'blue.50 !important',
+          })}
+          size="sm"
           onClick={() => setInteractionMode('pan')}
         >
-          <i class="fas fa-arrows-alt" />
-        </button>
-        <button
-          type="button"
+          <IconArrowsMove size={18} />
+        </Button>
+        <Button
           title="Scale Axes"
-          class={interactionMode() === 'scale_axis' ? styles.active : ''}
+          class={css({
+            bg: interactionMode() === 'scale_axis' && 'blue.50 !important',
+          })}
+          size="sm"
           onClick={() => setInteractionMode('scale_axis')}
         >
-          <i class="fas fa-expand-alt" />
-        </button>
-        <button
-          type="button"
+          <IconMaximize size={18} />
+        </Button>
+        <Button
           title="Rotate Axes"
-          class={interactionMode() === 'rotate_axis' ? styles.active : ''}
+          class={css({
+            bg: interactionMode() === 'rotate_axis' && 'blue.50 !important',
+          })}
+          size="sm"
           onClick={() => setInteractionMode('rotate_axis')}
         >
-          <i class="fas fa-sync-alt" />
-        </button>
+          <IconRotate size={18} />
+        </Button>
 
         <div style={{ width: '1px', background: '#eee', margin: '0 4px' }} />
 
-        <button type="button" title="Reset View" onClick={resetView}>
-          <i class="fas fa-home" />
-        </button>
-        <button type="button" title="Center Origin" onClick={centerOrigin}>
-          <i class="fas fa-crosshairs" />
-        </button>
-        <button type="button" title="Zoom In" onClick={handleZoomIn}>
-          <i class="fas fa-search-plus" />
-        </button>
-        <button type="button" title="Zoom Out" onClick={handleZoomOut}>
-          <i class="fas fa-search-minus" />
-        </button>
+        <Button title="Reset View" variant="ghost" size="sm" onClick={resetView}>
+          <IconHome size={18} />
+        </Button>
+        <Button title="Center Origin" variant="ghost" size="sm" onClick={centerOrigin}>
+          <IconCrosshair size={18} />
+        </Button>
+        <Button title="Zoom In" variant="ghost" size="sm" onClick={handleZoomIn}>
+          <IconZoomIn size={18} />
+        </Button>
+        <Button title="Zoom Out" variant="ghost" size="sm" onClick={handleZoomOut}>
+          <IconZoomOut size={18} />
+        </Button>
       </div>
 
       <div class={styles.coordinatesWrapper}>

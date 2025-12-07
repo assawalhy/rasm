@@ -77,7 +77,13 @@ function getControlById(id) {
  * Remove a control by ID
  */
 function removeControl(id) {
-  setControls('list', (list) => list.filter((c) => c.id !== id));
+  setControls('list', (list) => {
+    const controlToRemove = list.find((c) => c.id === id);
+    if (controlToRemove?.graphChild) {
+      controlToRemove.graphChild.remove();
+    }
+    return list.filter((c) => c.id !== id);
+  });
 }
 
 /**

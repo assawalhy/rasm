@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare": "panda codegen",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -11,12 +12,19 @@
     "format": "biome format --write ."
   },
   "dependencies": {
+    "@ark-ui/solid": "^5.29.1",
     "@rasm/magical-parser": "workspace:*",
     "@rasm/math": "workspace:*",
+    "@tabler/icons-solidjs": "^3.35.0",
+    "chroma-js": "^3.2.0",
     "solid-js": "^1.9.10"
   },
   "devDependencies": {
+    "@pandacss/dev": "^1.6.1",
+    "@park-ui/panda-preset": "^0.43.1",
+    "@types/chroma-js": "^3.1.2",
     "@vitejs/plugin-legacy": "^7.2.1",
+    "postcss": "^8.5.6",
     "sass": "^1.83.0",
     "solid-devtools": "^0.34.4",
     "vite": "^7.2.6",
