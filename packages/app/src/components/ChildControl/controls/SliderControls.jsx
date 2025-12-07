@@ -1,8 +1,13 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js';
-import { registerSlider, unregisterSlider } from '@stores/animationStore';
-import styles from './SliderControls.module.scss';
-import { requestRedraw } from '@stores/sketchStore';
-import { IconChevronDown, IconChevronUp, IconPlayerPause, IconPlayerPlay } from '@tabler/icons-solidjs';
+import { createEffect, createSignal, onCleanup } from "solid-js";
+import { registerSlider, unregisterSlider } from "@stores/animationStore";
+import styles from "./SliderControls.module.scss";
+import { requestRedraw } from "@/stores/sketchStore";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconPlayerPause,
+  IconPlayerPlay,
+} from "@tabler/icons-solidjs";
 
 /**
  * SliderControls component - controls for Slider graph child
@@ -33,6 +38,7 @@ export default function SliderControls(props) {
 
     if (props.graphChild) {
       props.graphChild.setValue(newValue);
+      props.dryUpdateLatex(`${props.graphChild.id}=${newValue}`);
       requestRedraw();
     }
   };
@@ -42,6 +48,7 @@ export default function SliderControls(props) {
     setValue(newValue);
     if (props.graphChild) {
       props.graphChild.setValue(newValue);
+      props.dryUpdateLatex(`${props.graphChild.id}=${newValue}`);
       requestRedraw();
     }
   };
@@ -60,6 +67,7 @@ export default function SliderControls(props) {
     setValue(newVal);
     if (props.graphChild) {
       props.graphChild.setValue(newVal);
+      props.dryUpdateLatex(`${props.graphChild.id}=${newVal}`);
     }
   };
 
@@ -89,7 +97,7 @@ export default function SliderControls(props) {
         setMin(value);
       }
     } catch (e) {
-      console.error('Invalid min value:', e);
+      console.error("Invalid min value:", e);
     }
   };
 
@@ -100,7 +108,7 @@ export default function SliderControls(props) {
         setMax(value);
       }
     } catch (e) {
-      console.error('Invalid max value:', e);
+      console.error("Invalid max value:", e);
     }
   };
 
@@ -111,7 +119,7 @@ export default function SliderControls(props) {
         setStep(value);
       }
     } catch (e) {
-      console.error('Invalid step value:', e);
+      console.error("Invalid step value:", e);
     }
   };
 
@@ -119,16 +127,20 @@ export default function SliderControls(props) {
     <div class={styles.sliderOuter} classList={{ [styles.play]: isPlaying() }}>
       <div class={styles.rangeContainer}>
         <button
-          type="button"
+          type='button'
           class={styles.controllerToggle}
           onClick={() => setShowController(!showController())}
-          title="Toggle Controls"
+          title='Toggle Controls'
         >
-          {showController() ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
+          {showController() ? (
+            <IconChevronUp size={14} />
+          ) : (
+            <IconChevronDown size={14} />
+          )}
         </button>
 
         <input
-          type="range"
+          type='range'
           class={styles.slider}
           min={min()}
           max={max()}
@@ -138,8 +150,17 @@ export default function SliderControls(props) {
           onChange={handleSliderChange}
         />
 
-        <button type="button" class={styles.playPause} onClick={togglePlay} title={isPlaying() ? 'Pause' : 'Play'}>
-          {isPlaying() ? <IconPlayerPause size={14} /> : <IconPlayerPlay size={14} />}
+        <button
+          type='button'
+          class={styles.playPause}
+          onClick={togglePlay}
+          title={isPlaying() ? "Pause" : "Play"}
+        >
+          {isPlaying() ? (
+            <IconPlayerPause size={14} />
+          ) : (
+            <IconPlayerPlay size={14} />
+          )}
         </button>
       </div>
 

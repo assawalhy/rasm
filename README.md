@@ -20,7 +20,7 @@ A mathematical graphing and visualization application for sketching functions, g
 
 ### App Structure (`packages/app`)
 
-```
+```txt
 src/
 ├── components/          # SolidJS UI components
 │   ├── App/             # Root app component
@@ -71,7 +71,7 @@ bunx turbo --filter @rasm/app preview
 - [ ] Better performance
   - [ ] More threads using WebWorker
   - [ ] GPU computing using WebGPU
-  - [ ] Low level compiled languages using WebAssembly 
+  - [ ] Low level compiled languages using WebAssembly
 - [ ] Configure the coordinates display
   - [ ] Show axes labels and change in settings
   - [ ] Show grid lines and change in settings
@@ -94,8 +94,8 @@ bunx turbo --filter @rasm/app preview
   - [ ] Polar functions: $r = f(\theta)$
 - [ ] Long press on a math-field causing a tools bar to appear with a copy as ($\TeX$, ASCII-math), clear.
 - [ ] More advanced sidebar
-    - [ ] Maybe folders and expressions like Desmos or some thing more flexible like Jupiter Py
-    - [ ] Make it sortable and foldable
+  - [ ] Maybe folders and expressions like Desmos or some thing more flexible like Jupiter Py
+  - [ ] Make it sortable and foldable
 - [ ] Keyboard hotkeys
   - [ ] Move and sort the child controls
   - [ ] Zoom in/out and pan the canvas

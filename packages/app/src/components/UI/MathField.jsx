@@ -1,5 +1,5 @@
-import { createEffect, onCleanup, onMount } from 'solid-js';
-import { mathQuill } from '@/utils/mathQuill';
+import { createEffect, onCleanup, onMount } from "solid-js";
+import { mathQuill } from "@/utils/mathQuill";
 
 /**
  * MathField wrapper component for MathQuill integration
@@ -15,15 +15,15 @@ export default function MathField(props) {
     // Initialize MathQuill
     mathField = mathQuill.MathField(fieldRef, {
       spaceBehavesLikeTab: true,
-      leftRightIntoCmdGoes: 'up',
+      leftRightIntoCmdGoes: "up",
       restrictMismatchedBrackets: true,
       sumStartsWithNEquals: true,
       supSubsRequireOperand: true,
-      charsThatBreakOutOfSupSub: '+-=<>',
+      charsThatBreakOutOfSupSub: "+-=<>",
       autoSubscriptNumerals: true,
       autoCommands:
-        'pi theta sqrt sum prod alpha beta gamma delta epsilon zeta eta mu nu xi rho sigma tau phi chi psi omega',
-      autoOperatorNames: 'sin cos tan sec csc cot sinh cosh tanh ln log',
+        "pi theta sqrt sum prod alpha beta gamma delta epsilon zeta eta mu nu xi rho sigma tau phi chi psi omega",
+      autoOperatorNames: "sin cos tan sec csc cot sinh cosh tanh ln log",
       handlers: {
         edit: () => {
           if (mathField) {
@@ -49,6 +49,8 @@ export default function MathField(props) {
       },
     });
 
+    props.setMathField?.(mathField);
+
     // Add focus/blur event listeners to the underlying element
     // MathQuill doesn't have built-in focus/blur handlers, so we use DOM events
     handleFocus = () => {
@@ -59,8 +61,8 @@ export default function MathField(props) {
       props.onBlur?.();
     };
 
-    fieldRef.addEventListener('focusin', handleFocus);
-    fieldRef.addEventListener('focusout', handleBlur);
+    fieldRef.addEventListener("focusin", handleFocus);
+    fieldRef.addEventListener("focusout", handleBlur);
 
     // Set initial value if provided
     if (props.value) {
@@ -75,39 +77,20 @@ export default function MathField(props) {
 
   // Update latex when prop changes
   createEffect(() => {
-    if (mathField && props.value !== undefined && mathField.latex() !== props.value) {
+    if (
+      mathField &&
+      props.value !== undefined &&
+      mathField.latex() !== props.value
+    ) {
       mathField.latex(props.value);
-    }
-  });
-
-  // Expose methods via ref
-  createEffect(() => {
-    if (props.ref && mathField) {
-      props.ref({
-        latex: (value) => {
-          if (value !== undefined) {
-            mathField.latex(value);
-          }
-          return mathField.latex();
-        },
-        focus: () => mathField.focus(),
-        blur: () => mathField.blur(),
-        write: (latex) => mathField.write(latex),
-        cmd: (cmd) => mathField.cmd(cmd),
-        select: () => mathField.select(),
-        clearSelection: () => mathField.clearSelection(),
-        moveToLeftEnd: () => mathField.moveToLeftEnd(),
-        moveToRightEnd: () => mathField.moveToRightEnd(),
-        keystroke: (keys) => mathField.keystroke?.(keys),
-      });
     }
   });
 
   onCleanup(() => {
     // Clean up event listeners
     if (fieldRef && handleFocus && handleBlur) {
-      fieldRef.removeEventListener('focusin', handleFocus);
-      fieldRef.removeEventListener('focusout', handleBlur);
+      fieldRef.removeEventListener("focusin", handleFocus);
+      fieldRef.removeEventListener("focusout", handleBlur);
     }
   });
 

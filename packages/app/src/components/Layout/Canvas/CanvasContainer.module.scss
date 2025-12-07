@@ -4,15 +4,6 @@
   background: #fafafa;
   overflow: hidden;
 
-  .coordinatesWrapper {
-    opacity: 0;
-  }
-
-  &:hover {
-    .coordinatesWrapper {
-      opacity: 1;
-    }
-  }
 }
 
 .tools {
@@ -60,4 +51,11 @@
   left: 1rem;
   z-index: 3;
   transition: 0.2s ease-in-out all;
+  opacity: 0;
+}
+
+.canvasContainer:not(:has(.tools:hover)):hover {
+  .coordinatesWrapper {
+    opacity: 1;
+  }
 }

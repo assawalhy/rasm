@@ -13,7 +13,7 @@ export default function Splitter(props) {
   const handleMouseDown = (e) => {
     setIsDragging(true);
     startX = e.clientX;
-    startWidth = props.onResize ? (typeof props.onResize === 'function' ? 300 : props.width || 300) : 300;
+    startWidth = props.width || 300;
     e.preventDefault();
   };
 

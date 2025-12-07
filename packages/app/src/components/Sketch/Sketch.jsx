@@ -1,4 +1,4 @@
-import { getSketch, initSketch, isSketchReady } from '@stores/sketchInstance';
+import { getSketch, initSketch } from "@stores/sketchInstance";
 import {
   graphSettings,
   initGraphSettings,
@@ -12,12 +12,15 @@ import {
   setGraphSettings,
   reformXSpace,
   reformYSpace,
-  ANGLE_MARGIN,
-} from '@stores/graphSettingsStore';
-import { forceRedraw, requestRedraw, setSketchState } from '@stores/sketchStore';
-import { createEffect, createSignal, on, onCleanup, onMount } from 'solid-js';
-import styles from './Sketch.module.scss';
-import { Angles, Core, Lines, Vector } from '@rasm/math';
+} from "@stores/graphSettingsStore";
+import {
+  forceRedraw,
+  requestRedraw,
+  setSketchState,
+} from "@stores/sketchStore";
+import { createEffect, createSignal, on, onCleanup, onMount } from "solid-js";
+import styles from "./Sketch.module.scss";
+import { Angles, Core, Lines, Vector } from "@rasm/math";
 
 const ROTATE_CENTER_BUFFER = 10;
 
@@ -53,14 +56,14 @@ export default function Sketch(props) {
     initSketch(mainCanvasRef, childrenCanvasRef);
 
     // Store canvas references in sketch state
-    setSketchState('canvas', mainCanvasRef);
-    setSketchState('ctx', mainCanvasRef.getContext('2d'));
-    setSketchState('childrenCanvas', childrenCanvasRef);
-    setSketchState('childrenCtx', childrenCanvasRef.getContext('2d'));
+    setSketchState("canvas", mainCanvasRef);
+    setSketchState("ctx", mainCanvasRef.getContext("2d"));
+    setSketchState("childrenCanvas", childrenCanvasRef);
+    setSketchState("childrenCtx", childrenCanvasRef.getContext("2d"));
 
     // Set canvas sizes and init graph settings
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener("resize", resizeCanvas);
 
     // Initial draw
     forceRedraw();
@@ -74,11 +77,11 @@ export default function Sketch(props) {
         sketch.activeAxis = activeAxis();
         requestRedraw();
       }
-    }),
+    })
   );
 
   onCleanup(() => {
-    window.removeEventListener('resize', resizeCanvas);
+    window.removeEventListener("resize", resizeCanvas);
   });
 
   function resizeCanvas() {
@@ -147,17 +150,17 @@ export default function Sketch(props) {
   const handleWindowUp = (e) => handlePointerUp(e);
 
   function addGlobalListeners() {
-    window.addEventListener('mousemove', handleWindowMove);
-    window.addEventListener('mouseup', handleWindowUp);
-    window.addEventListener('touchmove', handleWindowMove, { passive: false });
-    window.addEventListener('touchend', handleWindowUp);
+    window.addEventListener("mousemove", handleWindowMove);
+    window.addEventListener("mouseup", handleWindowUp);
+    window.addEventListener("touchmove", handleWindowMove, { passive: false });
+    window.addEventListener("touchend", handleWindowUp);
   }
 
   function removeGlobalListeners() {
-    window.removeEventListener('mousemove', handleWindowMove);
-    window.removeEventListener('mouseup', handleWindowUp);
-    window.removeEventListener('touchmove', handleWindowMove);
-    window.removeEventListener('touchend', handleWindowUp);
+    window.removeEventListener("mousemove", handleWindowMove);
+    window.removeEventListener("mouseup", handleWindowUp);
+    window.removeEventListener("touchmove", handleWindowMove);
+    window.removeEventListener("touchend", handleWindowUp);
   }
 
   // Mouse/touch event handlers
@@ -165,7 +168,7 @@ export default function Sketch(props) {
     const pos = getPosition(e);
 
     // Handle generic pan first if default mode
-    if (props.interactionMode === 'pan') {
+    if (props.interactionMode === "pan") {
       setIsDragging(true);
       dragStart = { x: pos.x, y: pos.y };
 
@@ -179,9 +182,9 @@ export default function Sketch(props) {
     const threshold = 30;
 
     let axis = null;
-    if (dists.x < threshold && dists.y < threshold) axis = 'xy';
-    else if (dists.x < threshold) axis = 'x';
-    else if (dists.y < threshold) axis = 'y';
+    if (dists.x < threshold && dists.y < threshold) axis = "xy";
+    else if (dists.x < threshold) axis = "x";
+    else if (dists.y < threshold) axis = "y";
 
     if (axis) {
       interactionState = {
@@ -202,7 +205,7 @@ export default function Sketch(props) {
   function handlePointerMove(e) {
     const pos = getPosition(e);
 
-    if (props.interactionMode === 'pan') {
+    if (props.interactionMode === "pan") {
       if (isDragging()) {
         const dx = pos.x - dragStart.x;
         const dy = pos.y - dragStart.y;
@@ -215,9 +218,9 @@ export default function Sketch(props) {
     }
 
     if (interactionState.active) {
-      if (props.interactionMode === 'scale_axis') {
+      if (props.interactionMode === "scale_axis") {
         handleScaleAxis(pos);
-      } else if (props.interactionMode === 'rotate_axis') {
+      } else if (props.interactionMode === "rotate_axis") {
         handleRotateAxis(pos);
       }
       e.preventDefault();
@@ -228,19 +231,20 @@ export default function Sketch(props) {
     const pos = getPosition(e);
     updateMouse(pos.x, pos.y);
 
-    if (props.interactionMode === 'pan' || interactionState.active) return;
+    if (props.interactionMode === "pan" || interactionState.active) return;
 
     const dists = getAxisDistances(pos);
     const threshold = 30; // same threshold as click
 
     let axis = null;
-    if (dists.x < threshold && dists.y < threshold) axis = 'xy';
-    else if (dists.x < threshold) axis = 'x';
-    else if (dists.y < threshold) axis = 'y';
+    if (dists.x < threshold && dists.y < threshold) axis = "xy";
+    else if (dists.x < threshold) axis = "x";
+    else if (dists.y < threshold) axis = "y";
 
     if (
-      props.interactionMode === 'rotate_axis' &&
-      Core.dist(graphSettings.center.x, graphSettings.center.y, pos.x, pos.y) < ROTATE_CENTER_BUFFER
+      props.interactionMode === "rotate_axis" &&
+      Core.dist(graphSettings.center.x, graphSettings.center.y, pos.x, pos.y) <
+        ROTATE_CENTER_BUFFER
     ) {
       axis = null;
     }
@@ -256,9 +260,10 @@ export default function Sketch(props) {
     const mouseVec = new Vector(pos.x, pos.y);
 
     let angle = 0;
-    if (axis === 'x') angle = -graphSettings.xAngle;
-    if (axis === 'y') angle = -graphSettings.yAngle;
-    if (axis === 'xy') angle = -(graphSettings.xAngle + graphSettings.yAngle) / 2; // Approximate mid angle
+    if (axis === "x") angle = -graphSettings.xAngle;
+    if (axis === "y") angle = -graphSettings.yAngle;
+    if (axis === "xy")
+      angle = -(graphSettings.xAngle + graphSettings.yAngle) / 2; // Approximate mid angle
 
     const axisLine = Lines.lineEquation(angle, center);
 
@@ -271,19 +276,22 @@ export default function Sketch(props) {
 
     if (!isNaN(incre)) {
       // Determine direction using angle check
-      const mina = Angles.minAngle(Vector.fromAngle(angle), mouseVec.subtract(startMouse));
+      const mina = Angles.minAngle(
+        Vector.fromAngle(angle),
+        mouseVec.subtract(startMouse)
+      );
       const dir = mina < Math.PI / 2 ? 1 : -1;
 
       const delta = incre * dir - increment;
       interactionState.increment = incre * dir;
 
-      if (axis === 'x') {
-        setGraphSettings('xSpace', graphSettings.xSpace + delta);
+      if (axis === "x") {
+        setGraphSettings("xSpace", graphSettings.xSpace + delta);
         reformXSpace();
-      } else if (axis === 'y') {
-        setGraphSettings('ySpace', graphSettings.ySpace + delta);
+      } else if (axis === "y") {
+        setGraphSettings("ySpace", graphSettings.ySpace + delta);
         reformYSpace();
-      } else if (axis === 'xy') {
+      } else if (axis === "xy") {
         // Uniform scale
         const ratio = (graphSettings.ySpace + delta) / graphSettings.ySpace;
         // constrain ratio
@@ -297,7 +305,10 @@ export default function Sketch(props) {
         reformYSpace();
       }
 
-      setGraphSettings('transformOrigin', { px: { x: center.x, y: center.y }, math: { x: 0, y: 0 } }); // Keep origin fixed?
+      setGraphSettings("transformOrigin", {
+        px: { x: center.x, y: center.y },
+        math: { x: 0, y: 0 },
+      }); // Keep origin fixed?
       updateDimensions(graphSettings.width, graphSettings.height); // Triggers matrix update
       requestRedraw();
     }
@@ -319,11 +330,11 @@ export default function Sketch(props) {
       if (diff > Math.PI) diff -= 2 * Math.PI;
       if (diff < -Math.PI) diff += 2 * Math.PI;
 
-      if (axis === 'x') {
+      if (axis === "x") {
         setXAngle(startXAngle - diff);
-      } else if (axis === 'y') {
+      } else if (axis === "y") {
         setYAngle(startYAngle - diff);
-      } else if (axis === 'xy') {
+      } else if (axis === "xy") {
         setXAngle(startXAngle - diff);
         setYAngle(startYAngle - diff);
       }
@@ -333,7 +344,7 @@ export default function Sketch(props) {
   }
 
   function handlePointerUp() {
-    if (props.interactionMode === 'pan') {
+    if (props.interactionMode === "pan") {
       setIsDragging(false);
     }
     interactionState.active = false;
@@ -370,13 +381,13 @@ export default function Sketch(props) {
       class={styles.canvasWrapper}
       style={{
         cursor:
-          props.interactionMode === 'pan'
+          props.interactionMode === "pan"
             ? isDragging()
-              ? 'grabbing'
-              : 'grab'
+              ? "grabbing"
+              : "grab"
             : activeAxis()
-              ? 'crosshair'
-              : 'pointer',
+              ? "crosshair"
+              : "pointer",
       }}
       onMouseMove={handleAxesHover}
       onMouseDown={handlePointerDown}

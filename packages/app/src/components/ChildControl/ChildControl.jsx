@@ -1,21 +1,21 @@
-import MathField from '@components/UI/MathField';
-import { Node } from '@rasm/magical-parser';
-import { parser } from '@rasm/math';
-import { addControl, updateControl } from '@stores/controlsStore';
-import { getSketch, isSketchReady } from '@stores/sketchInstance';
-import { requestRedraw } from '@stores/sketchStore';
-import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
-import { Button } from '@components/ui/button';
-import { IconX } from '@tabler/icons-solidjs';
-import { UndefError } from '../../core/Errors/index.js';
-import { Empty } from '../../core/GraphChildren/index.js';
-import styles from './ChildControl.module.scss';
-import EmptyControls from './controls/EmptyControls';
-import EvalExprControls from './controls/EvalExprControls';
-import SliderControls from './controls/SliderControls';
-import VariableControls from './controls/VariableControls';
-import XfunctionControls from './controls/XfunctionControls';
+import MathField from "@components/UI/MathField";
+import { Node } from "@rasm/magical-parser";
+import { parser } from "@rasm/math";
+import { addControl, updateControl } from "@stores/controlsStore";
+import { getSketch, isSketchReady } from "@stores/sketchInstance";
+import { requestRedraw } from "@stores/sketchStore";
+import { For, Show, createSignal, onCleanup } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { Button } from "@components/ui/button";
+import { IconX } from "@tabler/icons-solidjs";
+import { UndefError } from "../../core/Errors/index.js";
+import { Empty } from "../../core/GraphChildren/index.js";
+import styles from "./ChildControl.module.scss";
+import EmptyControls from "./controls/EmptyControls";
+import EvalExprControls from "./controls/EvalExprControls";
+import SliderControls from "./controls/SliderControls";
+import VariableControls from "./controls/VariableControls";
+import XfunctionControls from "./controls/XfunctionControls";
 
 // Controls map based on graph child type
 const controlsMap = {
@@ -48,20 +48,23 @@ function getAllParsedNodes(node, check = {}) {
  * Replaces the vanilla JS ChildControl class
  */
 export default function ChildControl(props) {
-  const [latex, setLatex] = createSignal(props.control?.latex || '');
+  const [latex, setLatex] = createSignal(props.control?.latex || "");
   const [isError, setIsError] = createSignal(false);
-  const [errorMessage, setErrorMessage] = createSignal('');
+  const [errorMessage, setErrorMessage] = createSignal("");
   const [isFocused, setIsFocused] = createSignal(false);
-  const [graphChild, setGraphChild] = createSignal(props.control?.graphChild || null);
-  const [updateStatus, setUpdateStatus] = createSignal('ready'); // 'ready', 'updating', 're-update'
+  const [graphChild, setGraphChild] = createSignal(
+    props.control?.graphChild || null
+  );
+  const [updateStatus, setUpdateStatus] = createSignal("ready"); // 'ready', 'updating', 're-update'
 
   // Undefined variables/functions tracking
   const [missingVars, setMissingVars] = createSignal([]);
   const [missingFuncs, setMissingFuncs] = createSignal([]);
+  const [mathField, setMathField] = createSignal(null);
 
-  let mathFieldRef;
   let errorDebounceTimer = null;
   let pendingError = null;
+  let skipEdit = false;
 
   // Cleanup debounce timer on unmount
   onCleanup(() => {
@@ -81,7 +84,7 @@ export default function ChildControl(props) {
    * Show error with debounce
    */
   const showErrorDebounced = (error) => {
-    console.error('child control error', graphChild());
+    console.error("child control error", graphChild());
     console.error(error);
     pendingError = error;
 
@@ -109,7 +112,10 @@ export default function ChildControl(props) {
       setMissingFuncs(undef.funcs || []);
 
       const missingItems = [...(undef.vars || []), ...(undef.funcs || [])];
-      const message = missingItems.length > 0 ? `Undefined: ${missingItems.join(', ')}` : 'Undefined reference';
+      const message =
+        missingItems.length > 0
+          ? `Undefined: ${missingItems.join(", ")}`
+          : "Undefined reference";
 
       setIsError(true);
       setErrorMessage(message);
@@ -118,7 +124,7 @@ export default function ChildControl(props) {
       setMissingVars([]);
       setMissingFuncs([]);
       setIsError(true);
-      setErrorMessage(error.message || 'Parse error');
+      setErrorMessage(error.message || "Parse error");
     }
 
     updateControl(props.control.id, {
@@ -137,7 +143,7 @@ export default function ChildControl(props) {
     }
     pendingError = null;
     setIsError(false);
-    setErrorMessage('');
+    setErrorMessage("");
     setMissingVars([]);
     setMissingFuncs([]);
   };
@@ -187,6 +193,11 @@ export default function ChildControl(props) {
    * Parse latex and create/update graph child
    */
   const handleEdit = (newLatex) => {
+    // Skip if this edit was triggered by dryUpdateLatex
+    if (skipEdit) {
+      return;
+    }
+
     setLatex(newLatex);
     props.onEdit?.(newLatex);
 
@@ -198,12 +209,12 @@ export default function ChildControl(props) {
     }
 
     // Handle update status (prevent concurrent updates)
-    if (updateStatus() === 'updating') {
-      setUpdateStatus('re-update');
+    if (updateStatus() === "updating") {
+      setUpdateStatus("re-update");
       return;
     }
 
-    setUpdateStatus('updating');
+    setUpdateStatus("updating");
 
     let parsedScript = null;
     let vars = [];
@@ -219,8 +230,8 @@ export default function ChildControl(props) {
 
       let newGraphChild;
 
-      if (newLatex === '') {
-        parsedScript = new Node('');
+      if (newLatex === "") {
+        parsedScript = new Node("");
         newGraphChild = new Empty({ sketch });
       } else {
         // Parse the latex to maxima format, then parse with sketch parser
@@ -228,8 +239,12 @@ export default function ChildControl(props) {
         parsedScript = sketch.scriptParser.parse(maximaExpr);
 
         // Extract vars and funcs for dependency tracking
-        vars = getAllParsedNodes(parsedScript, { type: 'variable' }).map((a) => a.name);
-        funcs = getAllParsedNodes(parsedScript, { type: 'functionCalling' }).map((a) => a.name);
+        vars = getAllParsedNodes(parsedScript, { type: "variable" }).map(
+          (a) => a.name
+        );
+        funcs = getAllParsedNodes(parsedScript, {
+          type: "functionCalling",
+        }).map((a) => a.name);
 
         // Create graph child from parsed expression
         const childProps = {
@@ -262,7 +277,7 @@ export default function ChildControl(props) {
         validFuncs: vars,
         graphChild: newGraphChild,
         isError: false,
-        errorMessage: '',
+        errorMessage: "",
       });
 
       // Request canvas redraw
@@ -279,11 +294,11 @@ export default function ChildControl(props) {
     }
 
     // Check for queued re-update
-    if (updateStatus() === 're-update') {
-      setUpdateStatus('ready');
+    if (updateStatus() === "re-update") {
+      setUpdateStatus("ready");
       handleEdit(latex());
     } else {
-      setUpdateStatus('ready');
+      setUpdateStatus("ready");
     }
   };
 
@@ -322,17 +337,31 @@ export default function ChildControl(props) {
   };
 
   // Sync with props.control changes
-  createEffect(() => {
-    console.log('syncing', props);
-    if (props.control) {
-      if (props.control.latex !== latex()) {
-        setLatex(props.control.latex || '');
-      }
-      if (props.control.graphChild !== graphChild()) {
-        setGraphChild(props.control.graphChild);
-      }
+  // createEffect(() => {
+  //   console.log('syncing', props);
+  //   if (props.control) {
+  //     if (props.control.latex !== latex()) {
+  //       setLatex(props.control.latex || '');
+  //     }
+  //     if (props.control.graphChild !== graphChild()) {
+  //       setGraphChild(props.control.graphChild);
+  //     }
+  //   }
+  // });
+
+  /**
+   * Update math field latex without triggering edit event
+   * Used by child controls (like sliders) to update display value without re-parsing
+   */
+  const dryUpdateLatex = (newLatex) => {
+    skipEdit = true;
+    const mf = mathField();
+    if (mf) {
+      mf.latex(newLatex);
     }
-  });
+    setLatex(newLatex);
+    skipEdit = false;
+  };
 
   /**
    * Toggle graph child visibility
@@ -369,7 +398,16 @@ export default function ChildControl(props) {
       {/* Left Column: Specific controls like Color Picker */}
       <div class={styles.leftControls}>
         <Show when={getLeftControls()}>
-          <Dynamic component={getLeftControls()} graphChild={graphChild()} control={props.control} />
+          <Dynamic
+            component={getLeftControls()}
+            graphChild={graphChild()}
+            control={props.control}
+            mathField={mathField()}
+            displayError={displayError}
+            showErrorDebounced={showErrorDebounced}
+            clearError={clearError}
+            dryUpdateLatex={dryUpdateLatex}
+          />
         </Show>
       </div>
 
@@ -377,9 +415,7 @@ export default function ChildControl(props) {
       <div class={styles.main}>
         <div class={styles.script}>
           <MathField
-            ref={(ref) => {
-              mathFieldRef = ref;
-            }}
+            setMathField={setMathField}
             value={latex()}
             onEdit={handleEdit}
             onEnter={handleEnter}
@@ -390,7 +426,16 @@ export default function ChildControl(props) {
         </div>
 
         <Show when={getBottomControls()}>
-          <Dynamic component={getBottomControls()} graphChild={graphChild()} control={props.control} />
+          <Dynamic
+            component={getBottomControls()}
+            graphChild={graphChild()}
+            control={props.control}
+            mathField={mathField()}
+            displayError={displayError}
+            showErrorDebounced={showErrorDebounced}
+            clearError={clearError}
+            dryUpdateLatex={dryUpdateLatex}
+          />
         </Show>
 
         {/* Error message with undefined variable buttons */}
@@ -404,24 +449,24 @@ export default function ChildControl(props) {
                 <For each={missingVars()}>
                   {(varName) => (
                     <button
-                      type="button"
+                      type='button'
                       class={styles.addMissingButton}
                       onClick={() => addMissingVariable(varName)}
                       title={`Add variable ${varName}`}
                     >
-                      <i class="fas fa-plus" /> {varName}
+                      <i class='fas fa-plus' /> {varName}
                     </button>
                   )}
                 </For>
                 <For each={missingFuncs()}>
                   {(funcName) => (
                     <button
-                      type="button"
+                      type='button'
                       class={styles.addMissingButton}
                       onClick={() => addMissingVariable(funcName)}
                       title={`Add function ${funcName}`}
                     >
-                      <i class="fas fa-plus" /> {funcName}()
+                      <i class='fas fa-plus' /> {funcName}()
                     </button>
                   )}
                 </For>
@@ -429,12 +474,12 @@ export default function ChildControl(props) {
                 {/* Add all button if multiple missing */}
                 <Show when={missingVars().length + missingFuncs().length > 1}>
                   <button
-                    type="button"
+                    type='button'
                     class={`${styles.addMissingButton} ${styles.addAllButton}`}
                     onClick={addAllMissingVariables}
-                    title="Add all missing (or press Enter)"
+                    title='Add all missing (or press Enter)'
                   >
-                    <i class="fas fa-plus-circle" /> Add all
+                    <i class='fas fa-plus-circle' /> Add all
                   </button>
                 </Show>
               </div>
@@ -445,16 +490,24 @@ export default function ChildControl(props) {
 
       {/* Right Column: Delete and Order/Visibility */}
       <div class={styles.sideStatus}>
-        <Button variant="ghost" size="xs" class={styles.removeButton} onClick={() => props.onRemove?.()} title="Remove">
+        <Button
+          variant='ghost'
+          size='xs'
+          class={styles.removeButton}
+          onClick={() => props.onRemove?.()}
+          title='Remove'
+        >
           <IconX size={16} />
         </Button>
 
         <button
-          type="button"
+          type='button'
           class={styles.order}
-          classList={{ [styles.hidden]: graphChild() && !graphChild().renderable }}
+          classList={{
+            [styles.hidden]: graphChild() && !graphChild().renderable,
+          }}
           onClick={toggleVisibility}
-          title={graphChild() && !graphChild().renderable ? 'Show' : 'Hide'}
+          title={graphChild() && !graphChild().renderable ? "Show" : "Hide"}
         >
           {props.order || 1}
         </button>

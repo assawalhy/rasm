@@ -10,13 +10,13 @@ import styles from './App.module.scss';
  * Main App component - root of the SolidJS application
  */
 export default function App() {
-  const [sidebarWidth, setSidebarWidth] = createSignal(300);
+  const [sidebarWidth, setSidebarWidth] = createSignal(380);
 
   return (
     <>
       <div class={styles.app}>
         <Sidebar width={sidebarWidth()} />
-        <Splitter onResize={setSidebarWidth} min={200} max={600} />
+        <Splitter width={sidebarWidth()} onResize={setSidebarWidth} min={380} max={600} />
         <CanvasContainer />
         <Keypad />
       </div>

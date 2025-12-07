@@ -2,7 +2,7 @@
   padding: 0.5rem;
   background: #f9f9f9;
   border-radius: 4px;
-  
+
   &.play {
     background: #e3f2fd;
   }
@@ -26,11 +26,11 @@
   cursor: pointer;
   color: #666;
   transition: all 0.2s;
-  
+
   &:hover {
     background: #e0e0e0;
   }
-  
+
   i {
     font-size: 0.875rem;
   }
@@ -42,7 +42,7 @@
   border-radius: 3px;
   outline: none;
   cursor: pointer;
-  
+
   &::-webkit-slider-thumb {
     appearance: none;
     width: 16px;
@@ -51,25 +51,34 @@
     background: #667eea;
     cursor: pointer;
     transition: all 0.2s;
-    
+    position: relative;
+    top: -4px;
     &:hover {
       background: #5568d3;
       transform: scale(1.1);
     }
   }
-  
+
   &::-moz-range-thumb {
     width: 16px;
     height: 16px;
     border-radius: 50%;
     background: #667eea;
+    position: relative;
+    top: -4px;
     cursor: pointer;
     border: none;
-    
+
     &:hover {
       background: #5568d3;
       transform: scale(1.1);
     }
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 4px;
+    background: #ddd;
   }
 }
 
@@ -85,12 +94,12 @@
   cursor: pointer;
   color: white;
   transition: all 0.2s;
-  
+
   &:hover {
     background: #5568d3;
     transform: scale(1.05);
   }
-  
+
   i {
     font-size: 0.75rem;
   }
@@ -111,7 +120,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  
+
   label {
     min-width: 40px;
     color: #666;
