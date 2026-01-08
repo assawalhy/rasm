@@ -1,9 +1,9 @@
 import MathField from '@components/UI/MathField';
 import { parser } from '@rasm/math';
-import { addControl, updateControl } from '@stores/controlsStore';
+import { addControl, controls, focusControl, updateControl } from '@stores/controlsStore';
 import { getSketch, isSketchReady } from '@stores/sketchInstance';
 import { requestRedraw } from '@stores/sketchStore';
-import { For, Show, createSignal, onCleanup } from 'solid-js';
+import { For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Button } from '@components/ui/button';
 import { IconX } from '@tabler/icons-solidjs';
@@ -186,6 +186,14 @@ export default function ChildControl(props) {
     }, 100);
   };
 
+  // Focus tracking
+  createEffect(() => {
+    const mf = mathField();
+    if (mf && controls.focused === props.control.id) {
+      mf.focus();
+    }
+  });
+
   /**
    * Parse latex and create/update graph child
    */
@@ -305,12 +313,22 @@ export default function ChildControl(props) {
 
     // Otherwise, add a new control after this one
     const currentIndex = props.order || 1;
-    addControl({}, currentIndex);
+    focusControl(null);
+    const newControl = addControl({}, currentIndex);
+    focusControl(newControl.id);
     props.onEnter?.();
+  };
+
+  const handleDeleteOutOf = (dir) => {
+    // dir -1 is Left (backspace at start)
+    if (dir === -1) {
+      props.onRemove?.();
+    }
   };
 
   const handleFocus = () => {
     setIsFocused(true);
+    focusControl(props.control.id);
     props.onFocus?.();
   };
 
@@ -413,6 +431,7 @@ export default function ChildControl(props) {
             value={latex()}
             onEdit={handleEdit}
             onEnter={handleEnter}
+            onDeleteOutOf={handleDeleteOutOf}
             onFocus={handleFocus}
             onBlur={handleBlur}
             class={styles.mathField}

@@ -17,8 +17,11 @@ export default function Sidebar(props) {
   };
 
   const handleRemoveControl = (id) => {
+    const list = controls.list;
+    const index = list.findIndex((c) => c.id === id);
+
     // If it's the last control, clear it instead of removing
-    if (controls.list.length === 1 && controls.list[0].id === id) {
+    if (list.length === 1 && list[0].id === id) {
       updateControl(id, {
         latex: '',
         graphChild: null, // This will trigger convert to Empty
@@ -29,7 +32,23 @@ export default function Sidebar(props) {
       });
       return;
     }
+
+    // Determine which control to focus next
+    let nextFocusId = null;
+    if (index > 0) {
+      nextFocusId = list[index - 1].id;
+    } else if (list.length > 1) {
+      nextFocusId = list[index + 1].id;
+    }
+
     removeControl(id);
+
+    if (nextFocusId) {
+      // Small timeout to ensure the DOM has updated and the new control is ready to be focused
+      setTimeout(() => {
+        focusControl(nextFocusId);
+      }, 0);
+    }
   };
 
   // Ensure there's always at least one control
