@@ -18,8 +18,8 @@
       "version": "1.0.0",
       "dependencies": {
         "@ark-ui/solid": "^5.29.1",
-        "@rasm/magical-parser": "workspace:*",
         "@rasm/math": "workspace:*",
+        "@scicave/math-latex-parser": "^3.0.3",
         "@tabler/icons-solidjs": "^3.35.0",
         "chroma-js": "^3.2.0",
         "solid-js": "^1.9.10",
@@ -37,18 +37,11 @@
         "vite-tsconfig-paths": "^5.1.4",
       },
     },
-    "packages/magical-parser": {
-      "name": "@rasm/magical-parser",
-      "version": "1.0.0",
-      "devDependencies": {
-        "vite": "^7.2.6",
-      },
-    },
     "packages/math": {
       "name": "@rasm/math",
       "version": "1.0.0",
       "dependencies": {
-        "@rasm/magical-parser": "workspace:*",
+        "@scicave/math-latex-parser": "^3.0.3",
       },
       "devDependencies": {
         "vite": "^7.2.6",
@@ -418,8 +411,6 @@
 
     "@rasm/app": ["@rasm/app@workspace:packages/app"],
 
-    "@rasm/magical-parser": ["@rasm/magical-parser@workspace:packages/magical-parser"],
-
     "@rasm/math": ["@rasm/math@workspace:packages/math"],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.53.3", "", { "os": "android", "cpu": "arm" }, "sha512-mRSi+4cBjrRLoaal2PnqH82Wqyb+d3HsPUN/W+WslCXsZsyHa9ZeQQX/pQsZaVIWDkPcpV6jJ+3KLbTbgnwv8w=="],
@@ -465,6 +456,8 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.53.3", "", { "os": "win32", "cpu": "x64" }, "sha512-J9QDiOIZlZLdcot5NXEepDkstocktoVjkaKUtqzgzpt2yWjGlbYiKyp05rWwk4nypbYUNoFAztEgixoLaSETkg=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.53.3", "", { "os": "win32", "cpu": "x64" }, "sha512-UhTd8u31dXadv0MopwGgNOBpUVROFKWVQgAg5N1ESyCz8AuBcMqm4AuTjrwgQKGDfoFuz02EuMRHQIw/frmYKQ=="],
+
+    "@scicave/math-latex-parser": ["@scicave/math-latex-parser@3.0.3", "", {}, "sha512-4IWJpz4Msp70eVb1LL9WmL9pDRaBWjuMu9wYVfbRdNt7UvugwZSMUlej5OtNpAPcW/RMTwZvO54j8hOWiIvBtg=="],
 
     "@solid-devtools/debugger": ["@solid-devtools/debugger@0.28.1", "", { "dependencies": { "@nothing-but/utils": "~0.17.0", "@solid-devtools/shared": "^0.20.0", "@solid-primitives/bounds": "^0.1.1", "@solid-primitives/event-listener": "^2.4.1", "@solid-primitives/keyboard": "^1.3.1", "@solid-primitives/rootless": "^1.5.1", "@solid-primitives/scheduled": "^1.5.1", "@solid-primitives/static-store": "^0.1.1", "@solid-primitives/utils": "^6.3.1" }, "peerDependencies": { "solid-js": "^1.9.0" } }, "sha512-6qIUI6VYkXoRnL8oF5bvh2KgH71qlJ18hNw/mwSyY6v48eb80ZR48/5PDXufUa3q+MBSuYa1uqTMwLewpay9eg=="],
 

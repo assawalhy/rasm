@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@ark-ui/solid": "^5.29.1",
-    "@rasm/magical-parser": "workspace:*",
     "@rasm/math": "workspace:*",
+    "@scicave/math-latex-parser": "^3.0.3",
     "@tabler/icons-solidjs": "^3.35.0",
     "chroma-js": "^3.2.0",
     "solid-js": "^1.9.10"

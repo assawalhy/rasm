@@ -64,6 +64,8 @@ bunx turbo --filter @rasm/app preview
 
 ## TODOs
 
+Check [Projects tab](https://github.com/MuhammadSawalhy/rasm/projects?query=is%3Aopen) on the GitHub repo.
+
 - [ ] Share the graph as a link
   - [ ] Disable sharing if a CSV was uploaded or the graph children can't be serialized
 - [ ] Save the graph as an image
@@ -92,7 +94,9 @@ bunx turbo --filter @rasm/app preview
   - [ ] Implicit functions like $(x^{2}+y^{2}-1)^{3}=x^{2}y^{3}$
   - [ ] $(f(t), g(t))$
   - [ ] Polar functions: $r = f(\theta)$
-- [ ] Long press on a math-field causing a tools bar to appear with a copy as ($\TeX$, ASCII-math), clear.
+  - [ ] List of numbers and sets (and operations of them are done in a numpy way of handling arrays)
+  - [ ] Operations of lists and sets
+- [ ] Long press on a math-field to cause a tools bar to appear with a copy as ($\TeX$, ASCII-math), clear, and more.
 - [ ] More advanced sidebar
   - [ ] Maybe folders and expressions like Desmos or some thing more flexible like Jupiter Py
   - [ ] Make it sortable and foldable

@@ -1,9 +1,11 @@
 {
   "name": "@rasm/math",
   "version": "1.0.0",
-  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
+  "devDependencies": {
+    "vite": "^7.2.6"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js"
@@ -15,10 +17,8 @@
     "lint": "biome check .",
     "format": "biome format --write ."
   },
+  "type": "module",
   "dependencies": {
-    "@rasm/magical-parser": "workspace:*"
-  },
-  "devDependencies": {
-    "vite": "^7.2.6"
+    "@scicave/math-latex-parser": "^3.0.3"
   }
 }
