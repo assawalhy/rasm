@@ -1,71 +1,58 @@
-import Angles from './Angles.js';
+import Angles from './Angles';
 
 class Vector {
-  constructor(x, y) {
+  x: number;
+  y: number;
+
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
 
-  static fromAngle(angle, mag = 1) {
+  static fromAngle(angle: number, mag = 1): Vector {
     return new Vector(mag * Math.cos(angle), mag * Math.sin(angle));
   }
 
-  get mag() {
+  get mag(): number {
     return (this.x ** 2 + this.y ** 2) ** 0.5;
   }
 
-  get angle() {
+  get angle(): number {
     return Angles.angle(new Vector(1, 0), this);
   }
 
-  /**
-   * your parameter v is either vector or number.
-   * @param {Vector} v
-   * @param {number} v
-   */
-  add(v) {
+  add(v: Vector | number): Vector {
     if (v instanceof Vector) {
       return new Vector(this.x + v.x, this.y + v.y);
     }
-    if (!isNaN(v)) {
+    if (typeof v === 'number') {
       return new Vector(this.x + v, this.y + v);
     }
 
     throw new Error('your param is not valid.');
   }
 
-  /**
-   * your parameter v is either vector or number.
-   * @param {Vector} v
-   * @param {number} v
-   */
-  subtract(v) {
-    if (v instanceof Vector || v instanceof Object) {
-      return new Vector(this.x - v.x, this.y - v.y);
+  subtract(v: Vector | { x: number; y: number } | number): Vector {
+    if (v instanceof Vector || (typeof v === 'object' && v !== null && 'x' in v && 'y' in v)) {
+      const other = v as { x: number; y: number };
+      return new Vector(this.x - other.x, this.y - other.y);
     }
-    if (!isNaN(v)) {
+    if (typeof v === 'number') {
       return new Vector(this.x - v, this.y - v);
     }
 
     throw new Error('your param is not valid.');
   }
 
-  /**
-   * your parameter v is  or number.
-   * @param {number} v
-   */
-  mult(v) {
-    if (!isNaN(v)) {
+  mult(v: number): Vector {
+    if (typeof v === 'number') {
       return new Vector(this.x * v, this.y * v);
     }
 
     throw new Error('your param is not valid.');
   }
 
-  /**
-   * @param {Vector} v
-   */
-  dot(v) {
+  dot(v: Vector): number {
     if (v instanceof Vector) {
       return this.x * v.x + this.y * v.y;
     }
@@ -73,16 +60,16 @@ class Vector {
     throw new Error('your param is not valid.');
   }
 
-  rotate(a) {
-    a += this.angle;
-    return new Vector(this.mag * Math.cos(a), this.mag * Math.sin(a));
+  rotate(a: number): Vector {
+    const newAngle = a + this.angle;
+    return new Vector(this.mag * Math.cos(newAngle), this.mag * Math.sin(newAngle));
   }
 
-  toString() {
+  toString(): string {
     return `(${this.x}, ${this.y})`;
   }
 
-  toArray() {
+  toArray(): [number, number] {
     return [this.x, this.y];
   }
 }

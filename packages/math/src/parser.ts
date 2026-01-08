@@ -1,45 +1,64 @@
-import latexParser from '@scicave/math-latex-parser';
+import latexParser, { type Node } from '@scicave/math-latex-parser';
 
 export { latexParser };
 
+export interface Undef {
+  vars: string[];
+  funcs: string[];
+}
+
+export interface ParseResult<Params extends string[] = string[]> {
+  func: (...args: { [K in keyof Params]: number }) => number;
+  undef: Undef;
+}
+
 /**
  *
- * @param {latexParser.Node} parsed
- * @param {Array} params
- * @param {String} math is the math object containing the functions and the variables that is not a parameter.
- * @param {Boolean} strict
+ * @param parsed
+ * @param params
+ * @param math is the math object containing the functions and the variables that is not a parameter.
+ * @param strict
  */
-export function parsedTOjsFunction(parsed, params = [], math = 'Math', strict = true) {
-  const undef = { vars: [], funcs: [] };
+export function parsedTOjsFunction<Params extends string[]>(
+  parsed: Node,
+  params: Params = [] as unknown as Params,
+  math = 'Math',
+  strict = true
+): ParseResult<Params> {
+  const undef: Undef = { vars: [], funcs: [] };
   const jsContent = __generateJS(parsed, params, math, undef);
   const func = new Function(...params, `${strict ? '"use strict";\n' : ''}return ${jsContent};`);
   undef.vars = [...new Set(undef.vars)];
   undef.funcs = [...new Set(undef.funcs)];
-  return { func, undef };
+  return { func: func as ParseResult<Params>['func'], undef };
 }
 
-export function __generateJS(node, params = [], math = 'Math', undef = null) {
+export function __generateJS(node: Node, params: string[] = [], math = 'Math', undef: Undef | null = null): string {
   if (!node) return '';
 
   switch (node.type) {
     case 'number':
-      return node.value;
+      return node.value!.toString();
 
     case 'id':
-      if (params.includes(node.name)) {
-        return node.name;
+      if (params.includes(node.name!)) {
+        return node.name!;
       }
       if (undef) {
         const mathObj =
-          typeof window !== 'undefined' ? window[math] : typeof global !== 'undefined' ? global[math] : null;
-        if (mathObj && !Object.prototype.hasOwnProperty.call(mathObj, node.name)) {
+          typeof window !== 'undefined'
+            ? (window as unknown as Record<string, unknown>)[math]
+            : typeof global !== 'undefined'
+              ? (global as unknown as Record<string, unknown>)[math]
+              : null;
+        if (node.name && mathObj && !Object.prototype.hasOwnProperty.call(mathObj, node.name)) {
           undef.vars.push(node.name);
         }
       }
       return `${math}.${node.name}`;
 
     case 'automult':
-      return `(${node.args.map((arg) => __generateJS(arg, params, math, undef)).join(' * ')})`;
+      return `(${node.args.map((arg: Node) => __generateJS(arg, params, math, undef)).join(' * ')})`;
 
     case 'sum': {
       // args: [lower, upper, expression]
@@ -54,11 +73,11 @@ export function __generateJS(node, params = [], math = 'Math', undef = null) {
         } else {
           startVal = __generateJS(lower, params, math, undef);
           // Try to guess sumVar from expression if it's not in params
-          const ids = [];
-          const collectIds = (n) => {
+          const ids: string[] = [];
+          const collectIds = (n: Node | undefined) => {
             if (!n) return;
-            if (n.checkType('id')) ids.push(n.name);
-            if (n.args) n.args.forEach((arg) => collectIds(arg));
+            if (n.type === 'id') ids.push(n.name as string);
+            if (n.args) n.args.forEach((arg: Node) => collectIds(arg));
           };
           collectIds(expr);
           const potential = ids.find((id) => !params.includes(id));
@@ -108,16 +127,20 @@ export function __generateJS(node, params = [], math = 'Math', undef = null) {
       }
       {
         const actualArgs = node.args[0]?.checkType('block') ? node.args[0].args : node.args;
-        const jsArgs = actualArgs.map((arg) => __generateJS(arg, params, math, undef)).join(', ');
+        const jsArgs = actualArgs.map((arg: Node) => __generateJS(arg, params, math, undef)).join(', ');
 
-        if (params.includes(node.name)) {
+        if (params.includes(node.name!)) {
           return `${node.name}(${jsArgs})`;
         }
 
         if (undef) {
           const mathObj =
-            typeof window !== 'undefined' ? window[math] : typeof global !== 'undefined' ? global[math] : null;
-          if (mathObj && !Object.prototype.hasOwnProperty.call(mathObj, node.name)) {
+            typeof window !== 'undefined'
+              ? (window as unknown as Record<string, unknown>)[math]
+              : typeof global !== 'undefined'
+                ? (global as unknown as Record<string, unknown>)[math]
+                : null;
+          if (node.name && mathObj && !Object.prototype.hasOwnProperty.call(mathObj, node.name)) {
             undef.funcs.push(node.name);
           }
         }
@@ -165,16 +188,10 @@ export function __generateJS(node, params = [], math = 'Math', undef = null) {
   }
 }
 
-export function latexTOnode(tex) {
+export function latexTOnode(tex: string): Node {
   return latexParser.parse(tex);
 }
 
-export function latexTOjsfunction(tex, params = [], strict = true) {
+export function latexTOjsfunction(tex: string, params: string[] = [], strict = true): ParseResult<string[]> {
   return parsedTOjsFunction(latexParser.parse(tex), params, 'Math', strict);
 }
-
-// Keep these for backward compatibility if needed, but they just point to the same logic
-export const maximaTOnode = latexTOnode;
-export const maximaTOjsFunction = (str, params = [], math = 'Math', strict = true) =>
-  parsedTOjsFunction(latexParser.parse(str), params, math, strict);
-export const latexTOmaxima = (tex) => tex; // Identity since we no longer need maxima conversion
