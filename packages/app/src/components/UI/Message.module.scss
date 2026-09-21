@@ -1,0 +1,96 @@
+.messageContainer {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+  max-width: 500px;
+  pointer-events: all;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+  
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  &.info {
+    border-left: 4px solid #2196f3;
+    
+    i {
+      color: #2196f3;
+    }
+  }
+  
+  &.success {
+    border-left: 4px solid #4caf50;
+    
+    i {
+      color: #4caf50;
+    }
+  }
+  
+  &.warning {
+    border-left: 4px solid #ff9800;
+    
+    i {
+      color: #ff9800;
+    }
+  }
+  
+  &.error {
+    border-left: 4px solid #f44336;
+    
+    i {
+      color: #f44336;
+    }
+  }
+}
+
+.messageContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  i {
+    font-size: 1.25rem;
+  }
+  
+  span {
+    color: #333;
+    font-size: 0.875rem;
+  }
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 0.25rem;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: #333;
+  }
+  
+  i {
+    font-size: 0.875rem;
+  }
+}

@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare": "panda codegen",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -11,16 +12,23 @@
     "format": "biome format --write ."
   },
   "dependencies": {
+    "@ark-ui/solid": "^5.29.1",
     "@rasm/math": "workspace:*",
-    "@rasm/magical-parser": "workspace:*"
+    "@scicave/math-latex-parser": "^3.0.3",
+    "@tabler/icons-solidjs": "^3.35.0",
+    "chroma-js": "^3.2.0",
+    "solid-js": "^1.9.10"
   },
   "devDependencies": {
-    "@types/pug": "^2.0.10",
+    "@pandacss/dev": "^1.6.1",
+    "@park-ui/panda-preset": "^0.43.1",
+    "@types/chroma-js": "^3.1.2",
     "@vitejs/plugin-legacy": "^7.2.1",
-    "@vituum/vite-plugin-pug": "^1.1.0",
-    "pug": "^3.0.2",
+    "postcss": "^8.5.6",
     "sass": "^1.83.0",
+    "solid-devtools": "^0.34.4",
     "vite": "^7.2.6",
+    "vite-plugin-solid": "^2.11.10",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }

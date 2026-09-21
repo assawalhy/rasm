@@ -1,28 +1,26 @@
+import { mathToPixel } from '@stores/graphSettingsStore';
+import { Color, Pen } from '../drawing';
 import { getJSfunction } from '../global.js';
-import { Color, Pen } from "../drawing";
 import GraphChild from './GraphChild.js';
-
 
 export default class Point extends GraphChild {
   constructor(options) {
-    //#region
     options.pen = options.pen || new Pen(new Color(0, 0, 255), 10);
     let propName;
 
     propName = 'x';
     if (!options[propName]) {
       throw new Error(
-        `Your options passed to the shetchChild is not valid, it doesn't has ${propName} property, or it is falsy value`,
+        `Your options passed to the sketchChild is not valid, it doesn't have ${propName} property, or it is falsy value`,
       );
     }
 
     propName = 'y';
     if (!options[propName]) {
       throw new Error(
-        `Your options passed to the shetchChild is not valid, it doesn't has ${propName} property, or it is falsy value`,
+        `Your options passed to the sketchChild is not valid, it doesn't have ${propName} property, or it is falsy value`,
       );
     }
-    //#endregion
 
     super(options, (me) => {
       me.x = getJSfunction(me.x);
@@ -57,7 +55,7 @@ export default class Point extends GraphChild {
           canvas.ctx.fillStyle(this.sketch.coor.coorSettings.background.toString());
           break;
       }
-      const p = this.coorManager.coorTOpx(this.x.eval(), this.y.eval());
+      const p = mathToPixel(this.x.eval(), this.y.eval());
       canvas.ellipse(p.x, p.y, this.pen.weight, this.pen.weight);
     }
 

@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignore": ["**/*.pug", "public", "**/dist/**", "**/node_modules/**"]
+    "ignore": ["**/*.pug", "packages/app/public", "**/dist/**", "**/node_modules/**", "packages/math/src/tex2max.js"]
   },
   "formatter": {
     "enabled": true,
@@ -26,7 +26,14 @@
         "noForEach": "off"
       },
       "style": {
-        "noParameterAssign": "off"
+        "noParameterAssign": "off",
+        "noNonNullAssertion": "off"
+      },
+      "suspicious": {
+        "noGlobalIsNan": "off"
+      },
+      "correctness": {
+        "noUnusedImports": "error"
       }
     }
   },
@@ -35,5 +42,17 @@
       "quoteStyle": "single",
       "semicolons": "always"
     }
-  }
+  },
+  "overrides": [
+    {
+      "include": ["**/*.jsx", "**/*.tsx"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "off"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -1,17 +1,22 @@
-import legacy from "@vitejs/plugin-legacy";
-import pug from '@vituum/vite-plugin-pug';
+import legacy from '@vitejs/plugin-legacy';
+import devtools from 'solid-devtools/vite';
 import { defineConfig } from 'vite';
-import tsconfigPaths from "vite-tsconfig-paths";
+import solidPlugin from 'vite-plugin-solid';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [
-    legacy(["default", "not IE 11"]),
+    devtools({
+      autoname: true, // Auto-name signals for easier debugging
+    }),
+    solidPlugin(),
+    legacy(['default', 'not IE 11']),
     tsconfigPaths(),
-    pug()
   ],
-  build: {
-    rollupOptions: {
-      input: ['index.pug.html'],
-    }
-  }
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
 });
+

@@ -1,4 +1,4 @@
-import { colorPackage, Pen } from '../../drawing';
+import { Pen, randomDarkColor, randomLightColor } from '../../drawing';
 import { getJSfunction } from '../../global.js';
 /****************************************************************/
 /****************************************************************/
@@ -22,8 +22,8 @@ export default class XYfunction extends GraphChild {
 
     if (!options.pen) {
       const c = options.sketch.coor.coorSettings.background.isDark()
-        ? colorPackage.randomLightColor()
-        : colorPackage.randomDarkColor();
+        ? randomLightColor()
+        : randomDarkColor();
       c.a = 155;
       options.pen = new Pen(c, 2);
     }
@@ -50,8 +50,8 @@ export default class XYfunction extends GraphChild {
         let continous;
         ctx.beginPath();
         for (let x = this.gs.viewport.xmin; x <= this.gs.viewport.xmax; x += this.gs.drawingStep) {
-          p = this.gs.coorTOpx(x, this.expression(x));
-          midP = this.gs.coorTOpx(x - this.gs.drawingStep / 2, this.expression(x - this.gs.drawingStep / 2));
+          p = this.gs.mathToPixel(x, this.expression(x));
+          midP = this.gs.mathToPixel(x - this.gs.drawingStep / 2, this.expression(x - this.gs.drawingStep / 2));
           // if valid add new point, unless add the array of point if has more than point
           const valid =
             !isNaN(p.x) &&

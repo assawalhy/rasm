@@ -1,0 +1,17 @@
+
+.colorTrigger {
+  width: 24px;
+  height: 24px;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  border: 2px solid transparent !important;
+  transition: all 0.2s;
+  background-clip: padding-box;
+  /* ensure invalid colors don't break layout */
+  min-width: 24px;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.2);
+  }
+}
