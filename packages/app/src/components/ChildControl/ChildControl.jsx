@@ -240,7 +240,7 @@ export default function ChildControl(props) {
         newGraphChild = new Empty({ sketch });
       } else {
         // Parse the latex directly with the new parser
-        parsedScript = parser.latexTOnode(newLatex);
+        parsedScript = parser.latexToNode(newLatex);
 
         // Extract vars and funcs for dependency tracking
         vars = getAllParsedNodes(parsedScript, { type: 'id' }).map((a) => a.name);

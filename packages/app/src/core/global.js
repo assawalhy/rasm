@@ -80,11 +80,11 @@ Object.assign(Math, vars);
 export function getJSfunction(input, params, usestrict = true, undefThrowError = true) {
   let result;
   if (input instanceof parser.latexParser.Node) {
-    result = parser.parsedTOjsFunction(input, params, 'Math', usestrict);
+    result = parser.parsedToJsFunction(input, params, 'Math', usestrict);
   } else if ((typeof input).toLowerCase() === 'object') {
-    result = parser.latexTOjsfunction(input.value, params, usestrict);
+    result = parser.latexToJsFunction(input.value, params, usestrict);
   } else {
-    result = parser.latexTOjsfunction(input, params, usestrict);
+    result = parser.latexToJsFunction(input, params, usestrict);
   }
   if (undefThrowError) {
     if (result.undef.vars.length > 0 || result.undef.funcs.length > 0) throw new UndefError(result.undef);

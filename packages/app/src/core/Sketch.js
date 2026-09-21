@@ -20,7 +20,7 @@ export default class Sketch {
   }
 
   childFromScript = (script, propsTOset = {}) => {
-    const parsedString = parser.latexTOnode(script);
+    const parsedString = parser.latexToNode(script);
     return this.childFromParsed(parsedString, propsTOset);
   };
 

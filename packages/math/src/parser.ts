@@ -7,7 +7,7 @@ export interface Undef {
   funcs: string[];
 }
 
-export interface ParseResult<Params extends string[] = string[]> {
+export interface ParseResult<Params extends string[]> {
   func: (...args: { [K in keyof Params]: number }) => number;
   undef: Undef;
 }
@@ -19,7 +19,7 @@ export interface ParseResult<Params extends string[] = string[]> {
  * @param math is the math object containing the functions and the variables that is not a parameter.
  * @param strict
  */
-export function parsedTOjsFunction<Params extends string[]>(
+export function parsedToJsFunction<Params extends string[]>(
   parsed: Node,
   params: Params = [] as unknown as Params,
   math = 'Math',
@@ -188,10 +188,10 @@ export function __generateJS(node: Node, params: string[] = [], math = 'Math', u
   }
 }
 
-export function latexTOnode(tex: string): Node {
+export function latexToNode(tex: string): Node {
   return latexParser.parse(tex);
 }
 
-export function latexTOjsfunction(tex: string, params: string[] = [], strict = true): ParseResult<string[]> {
-  return parsedTOjsFunction(latexParser.parse(tex), params, 'Math', strict);
+export function latexToJsFunction<Params extends string[]>(tex: string, params: Params = [] as unknown as Params, strict = true): ParseResult<Params> {
+  return parsedToJsFunction(latexParser.parse(tex), params, 'Math', strict);
 }
